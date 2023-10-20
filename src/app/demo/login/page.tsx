@@ -1,6 +1,6 @@
-
-import BlankTemplate from "./_/templates/Blank"
-import nextspaceStyles from "./nextspace.module.scss"
+'use client'
+import BlankTemplate from "@/nextspace/layouts/Blank"
+import loginStyles from "./login.module.scss"
 
 
 type PageProps = {
@@ -8,9 +8,9 @@ type PageProps = {
 }
 
 export default function NextspacePage({ children }: PageProps) {
-    return <div className={nextspaceStyles.page}>
+    return <div className={loginStyles.login}>
         <BlankTemplate>
-            Nextspace
+            Login
         </BlankTemplate>
     </div>
 }

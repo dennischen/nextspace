@@ -1,9 +1,8 @@
-.layout {
-    position: "relative";
+.workspace {
+    position: relative;
 }
 
-.page {}
-
+// refer variable
 .code {
     font-weight: 700;
     font-family: var(--nextspace-font-mono);
