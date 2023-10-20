@@ -1,3 +1,5 @@
+'use client'
+//have to 'use client' to prevent build i18n resource into laout.js
 
 import WorkspaceBoundary from '@/nextspace/WorkspaceBoundary'
 import { lazy } from 'react'
