@@ -1,10 +1,9 @@
 
 
 export type Workspace = {
+    locales: string[]
+    registerTranslation: (locale: string, translation: any) => void
     i18n: I18n
-    // theme: () => Theme
-    // isAuth: () => boolean;
-    // getAuth: () => Auth | undefined
 }
 
 export type I18n = {
@@ -13,10 +12,4 @@ export type I18n = {
     l(key: string, args?: { [key: string]: string }): string
 }
 
-// export type Theme = {
 
-// }
-
-// export type Auth = {
-//     readonly token: string
-// }

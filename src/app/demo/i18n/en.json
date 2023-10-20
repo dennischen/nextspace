@@ -1,3 +1,6 @@
 {
-    "login":"Login"
+    "language": "Lanuage",
+    "zh": "Chinese",
+    "en": "English",
+    "login": "Login"
 }
