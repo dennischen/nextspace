@@ -2,5 +2,13 @@
     "language": "Lanuage",
     "zh": "Chinese",
     "en": "English",
-    "login": "Login"
+    "login": "Login",
+    "theme": "Theme",
+    "action": {
+        "@": "Action",
+        "selectLanguage": "Select language"
+    },
+
+
+    "fallback": "Fallback"
 }

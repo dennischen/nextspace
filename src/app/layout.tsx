@@ -1,3 +1,8 @@
+/*
+ * @file-created: 2023-10-23
+ * @author: Dennis Chen
+ */
+
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.scss'

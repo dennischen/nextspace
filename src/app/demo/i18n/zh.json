@@ -2,5 +2,10 @@
     "language": "語言",
     "zh": "中文",
     "en": "英文",
-    "login": "登入"
+    "login": "登入",
+    "theme": "佈景主題",
+    "action": {
+        "@": "行動",
+        "selectLanguage": "選擇語言"
+    }
 }

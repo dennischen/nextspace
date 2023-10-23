@@ -1,22 +1,39 @@
 'use client'
-
+/*
+ * @file-created: 2023-10-23
+ * @author: Dennis Chen
+ */
 import clsx from "clsx";
 import { Suspense, useCallback, useMemo, useState } from "react";
+import type { TranslationLoaderProps } from "./components/TranslationRegister";
 import WorkspaceHolder from "./contexts/workspaceContext";
 import styles from "./nextspace.module.scss";
-import { I18n, Workspace } from "./types";
+import { I18n, Workspace, WorkspaceConfig, WorkspacePri } from "./types";
+import SimpleTranslationHolder from "./utils/SimplIeTranslationHolder";
 import './variables.scss';
 
 export type WorkspaceBoundaryProps = {
     children: React.ReactNode
     className?: string
     defaultLocale?: string
-    translations?: { locale: string, lazyLoader: React.LazyExoticComponent<React.FunctionComponent> }[]
+    translations?: { locale: string, lazyLoader: React.LazyExoticComponent<React.ComponentType<TranslationLoaderProps>> }[]
+    config?: WorkspaceConfig
 }
 
-const translationMap = new Map<string, any>();
+let defaultConfig: WorkspaceConfig = {
+    translationHolder: new SimpleTranslationHolder()
+}
 
-export default function WorkspaceBoundary({ children, className, defaultLocale = "", translations = [] }: WorkspaceBoundaryProps) {
+export function setDefaultConfig(config: WorkspaceConfig) {
+    defaultConfig = Object.assign({}, defaultConfig, config);
+}
+
+
+export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
+    const { children, className, defaultLocale = "", translations = [] } = props
+    let { config = {} } = props
+
+    config = Object.assign({}, defaultConfig, config);
 
     const translationLocales: string[] = translations && translations.map((t) => t.locale) || []
 
@@ -32,43 +49,48 @@ export default function WorkspaceBoundary({ children, className, defaultLocale =
     assertInTranslation(defaultLocale);
 
     const [locale, setLocale] = useState(defaultLocale || translations.find(t => true)?.locale || '');
+    const [refresh, setRefresh] = useState(0);
+    const _refresh = function () {
+        setRefresh(refresh + 1);
+    }
+
+    const translationHolder = config.translationHolder
+    translationHolder?.setLocale(locale);
 
     const workspace = useMemo(() => {
         const i18n: I18n = {
             locale,
-            setLocal: (locale) => {
-                console.log(`set locale ${locale}`);
+            setLocale: (locale) => {
                 assertInTranslation(locale);
+                translationHolder?.setLocale(locale);
                 setLocale(locale);
             },
             l: (key, args) => {
-                //TODO
-                const val = translationMap.get(locale)?.[key];
-                console.log(`get ${key} from ${locale} : ${val}`);
-                return val || key;
+                return translationHolder?.l(key, args) || key;
             },
 
         }
         return {
             locales: translationLocales,
-            registerTranslation: (locale, translation) => {
-                //TODO
-                console.log(`register ${locale}`, translation);
-                translationMap.set(locale, translation);
-                //refresh? external store
+            _registerTranslation: (locale, translation) => {
+                translationHolder?.register(locale, translation);
+
+                //I did a trick here, since TransationLoader is rendered before children, so it can register language without rerender for
+                //1.by _refash(), it will cause setState in rendering error (client)
+                //2.by useEffect is not called in server, it will cause hydration warn (html difference between first server-client rendering)
+
+                // _refresh(); 
             },
             i18n: i18n
-        } as Workspace
+        } as (Workspace & WorkspacePri)
     }, [defaultLocale, locale]);
 
-    const TransationLoader = translations && translations.find((t) => t.locale === locale)?.lazyLoader;
-    console.log(">>>TransationLoader", TransationLoader);
+    const TransationLoader = (translations && translations.find((t) => t.locale === locale)?.lazyLoader);
 
     return <div className={clsx(styles.workspace, className)}>
         <Suspense fallback={<p>TODO Modal Loading...</p>}>
             <WorkspaceHolder.Provider value={workspace}>
-                {TransationLoader && <TransationLoader />}
-                {children}
+                {TransationLoader ? <TransationLoader>{children}</TransationLoader> : children}
             </WorkspaceHolder.Provider>
         </Suspense>
     </div>
