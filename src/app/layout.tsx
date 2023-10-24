@@ -9,10 +9,6 @@ import './globals.scss'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-    title: 'Nextspace Portal'
-}
-
 export default function RootLayout({
     children,
 }: {

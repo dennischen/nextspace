@@ -50,7 +50,7 @@ export default class I18nextTranslationHolder implements TranslationHolder {
         this.i18.addResourceBundle(locale, 'translation', translation)
     }
 
-    setLocale(locale: string) {
+    changeLocale(locale: string) {
         const { i18 } = this;
         this.i18.changeLanguage(locale)
     }

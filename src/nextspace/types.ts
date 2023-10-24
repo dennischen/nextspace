@@ -18,13 +18,13 @@ export type WorkspaceConfig = {
 
 export type I18n = {
     readonly locale: string
-    setLocale(locale: string): void
+    changeLocale(locale: string): void
     l(key: string, args?: { [key: string]: string }): string
 }
 
 export type TranslationHolder = {
     register: (locale: string, translation: { [key: string]: any }) => void
-    setLocale: (locale: string) => void
+    changeLocale: (locale: string) => void
     l(key: string, args?: { [key: string]: string }): string
 }
 

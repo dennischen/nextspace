@@ -1,9 +1,11 @@
 {
+    "home": "Home",
     "language": "Lanuage",
     "zh": "Chinese",
     "en": "English",
     "login": "Login",
     "theme": "Theme",
+    "project": "Project",
     "action": {
         "@": "Action",
         "selectLanguage": "Select language"

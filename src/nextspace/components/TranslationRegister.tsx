@@ -4,19 +4,19 @@
  * @author: Dennis Chen
  */
 
-import WorkspaceHolder from "@/nextspace/contexts/workspaceContext";
+import WorkspaceHolder from "@/nextspace/contexts/workspace";
 import { WorkspacePri } from "@/nextspace/types";
-import { useContext, useMemo } from "react";
+import { useContext } from "react";
 
 
 export type TranslationLoaderProps = {
-    children: React.ReactNode
+    children?: React.ReactNode
 }
 
 export type TranslationRegisterProps = {
     locale: string;
     translation: { [key: string]: any }
-    children: React.ReactNode
+    children?: React.ReactNode
 }
 
 export default function TranslationRegister({ locale, translation, children }: TranslationRegisterProps) {

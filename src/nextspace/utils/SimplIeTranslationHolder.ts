@@ -15,7 +15,7 @@ export default class SimpleTranslationHolder implements TranslationHolder {
         translationMap.set(locale, translation);
     }
 
-    setLocale(locale: string) {
+    changeLocale(locale: string) {
         this.locale = locale;
     }
 

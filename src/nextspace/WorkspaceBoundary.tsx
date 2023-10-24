@@ -5,8 +5,9 @@
  */
 import clsx from "clsx";
 import { Suspense, useCallback, useMemo, useState } from "react";
+import DelayedFallback from "./components/DelayedFallback";
 import type { TranslationLoaderProps } from "./components/TranslationRegister";
-import WorkspaceHolder from "./contexts/workspaceContext";
+import WorkspaceHolder from "./contexts/workspace";
 import styles from "./nextspace.module.scss";
 import { I18n, Workspace, WorkspaceConfig, WorkspacePri } from "./types";
 import SimpleTranslationHolder from "./utils/SimplIeTranslationHolder";
@@ -55,14 +56,14 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     }
 
     const translationHolder = config.translationHolder
-    translationHolder?.setLocale(locale);
+    translationHolder?.changeLocale(locale);
 
     const workspace = useMemo(() => {
         const i18n: I18n = {
             locale,
-            setLocale: (locale) => {
+            changeLocale: (locale) => {
                 assertInTranslation(locale);
-                translationHolder?.setLocale(locale);
+                translationHolder?.changeLocale(locale);
                 setLocale(locale);
             },
             l: (key, args) => {
@@ -87,12 +88,14 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
     const TransationLoader = (translations && translations.find((t) => t.locale === locale)?.lazyLoader);
 
+    
+
     return <div className={clsx(styles.workspace, className)}>
-        <Suspense fallback={<p>TODO Modal Loading...</p>}>
-            <WorkspaceHolder.Provider value={workspace}>
+        <WorkspaceHolder.Provider value={workspace}>
+            <Suspense fallback={<DelayedFallback />}>
                 {TransationLoader ? <TransationLoader>{children}</TransationLoader> : children}
-            </WorkspaceHolder.Provider>
-        </Suspense>
+            </Suspense>
+        </WorkspaceHolder.Provider>
     </div>
 }
 
