@@ -15,21 +15,13 @@ import Banner from "./Banner";
 import Footer from './Footer';
 import fallbackTranslation from "./i18n/en.json";
 import "./variables.scss";
+import translationLoader from '@/nextspace/components/translationLoader';
 const fallbackLocale = "en"
 
-const EnTranslation = lazy(() => import('./i18n/EnLoader'))
-const ZhTranslation = lazy(() => import('./i18n/ZhLoader'))
+const EnLoader = translationLoader("en", () => import('./i18n/EnLoader'))
+const ZhLoader = translationLoader("zh", () => import('./i18n/ZhLoader'))
 
-const translations = [
-    {
-        locale: "en",
-        lazyLoader: EnTranslation
-    },
-    {
-        locale: "zh",
-        lazyLoader: ZhTranslation
-    }
-]
+const translations = [EnLoader, ZhLoader]
 
 export type WorkspaceLayoutProps = {
     defaultLocale: string,
@@ -37,7 +29,7 @@ export type WorkspaceLayoutProps = {
 }
 
 export default function WorkspaceLayout({ defaultLocale, children }: WorkspaceLayoutProps) {
-    
+
     defaultLocale = translations.find((l) => l.locale === defaultLocale)?.locale || translations[0].locale;
 
     const config = useMemo(() => {
@@ -50,8 +42,8 @@ export default function WorkspaceLayout({ defaultLocale, children }: WorkspaceLa
     }, [])
 
     return <WorkspaceBoundary defaultLocale={defaultLocale} translations={translations} config={config} className={demoStyles.layout}>
-        <Banner/>
+        <Banner />
         {children}
-        <Footer/>
+        <Footer />
     </WorkspaceBoundary >
 }

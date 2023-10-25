@@ -13,7 +13,7 @@ export type WorkspacePri = {
 }
 
 export type WorkspaceConfig = {
-    translationHolder?: TranslationHolder
+    translationHolder: TranslationHolder
 }
 
 export type I18n = {

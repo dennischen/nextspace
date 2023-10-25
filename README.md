@@ -1,3 +1,8 @@
+
+This project bases on nextjs app and provides ability to
+* Cookie/header/session based i18n locale (no /en/page, /zh/page in url) and load translation with lazy trunk when reqired
+* More...
+
 ## Getting Started
 
 Run the development server:

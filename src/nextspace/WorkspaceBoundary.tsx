@@ -4,77 +4,93 @@
  * @author: Dennis Chen
  */
 import clsx from "clsx";
-import { Suspense, useCallback, useMemo, useState } from "react";
-import DelayedFallback from "./components/DelayedFallback";
-import type { TranslationLoaderProps } from "./components/TranslationRegister";
+import { Suspense, useMemo, useState } from "react";
+import Modal from "./components/Modal";
+import { TranslationLoaderComponent, TranslationLoaderProps } from "./components/translationLoader";
 import WorkspaceHolder from "./contexts/workspace";
 import styles from "./nextspace.module.scss";
 import { I18n, Workspace, WorkspaceConfig, WorkspacePri } from "./types";
 import SimpleTranslationHolder from "./utils/SimplIeTranslationHolder";
 import './variables.scss';
 
-export type WorkspaceBoundaryProps = {
-    children: React.ReactNode
-    className?: string
-    defaultLocale?: string
-    translations?: { locale: string, lazyLoader: React.LazyExoticComponent<React.ComponentType<TranslationLoaderProps>> }[]
-    config?: WorkspaceConfig
-}
-
 let defaultConfig: WorkspaceConfig = {
     translationHolder: new SimpleTranslationHolder()
 }
 
-export function setDefaultConfig(config: WorkspaceConfig) {
+export function setDefaultConfig(config: Partial<WorkspaceConfig>) {
     defaultConfig = Object.assign({}, defaultConfig, config);
 }
 
+export type WorkspaceBoundaryProps = {
+    children: React.ReactNode
+    className?: string
+    defaultLocale?: string
+    translations?: TranslationLoaderComponent<React.ComponentType<TranslationLoaderProps>>[]
+    config?: Partial<WorkspaceConfig>
+}
+
+
+function assertTranslationLoader(locale: string | undefined,
+    translations: TranslationLoaderComponent<React.ComponentType<TranslationLoaderProps>>[]) {
+    if (locale) {
+        const translation = translations.find((t) => t.locale === locale)
+        if (!translation) {
+            throw `No ${locale} found in translations [${translations.join(",")}]`
+        }
+        return translation;
+    }
+}
 
 export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     const { children, className, defaultLocale = "", translations = [] } = props
     let { config = {} } = props
 
-    config = Object.assign({}, defaultConfig, config);
-
-    const translationLocales: string[] = translations && translations.map((t) => t.locale) || []
-
-    const assertInTranslation = useCallback((locale: string | undefined) => {
-        if (locale) {
-            if (!translations.find((t) => t.locale === locale)) {
-                throw `No ${locale} found in translations [${translations.join(",")}]`
-            }
-        }
-    }, translationLocales)
+    const mergedConfig = Object.assign({}, defaultConfig, config) as WorkspaceConfig;
 
     //check defaultLocal in translations
-    assertInTranslation(defaultLocale);
+    assertTranslationLoader(defaultLocale, translations);
 
     const [locale, setLocale] = useState(defaultLocale || translations.find(t => true)?.locale || '');
-    const [refresh, setRefresh] = useState(0);
-    const _refresh = function () {
-        setRefresh(refresh + 1);
-    }
+    // const [refresh, setRefresh] = useState(0);
+    // const _refresh = function () {
+    //     setRefresh(refresh + 1);
+    // }
 
-    const translationHolder = config.translationHolder
-    translationHolder?.changeLocale(locale);
+    const translationHolder = mergedConfig.translationHolder;
+    translationHolder.changeLocale(locale);
 
     const workspace = useMemo(() => {
+        const translationLocales = translations && translations.map((t) => t.locale) || [];
         const i18n: I18n = {
             locale,
-            changeLocale: (locale) => {
-                assertInTranslation(locale);
-                translationHolder?.changeLocale(locale);
-                setLocale(locale);
+            changeLocale: (fnLocale) => {
+                const loader = assertTranslationLoader(fnLocale, translations);
+                const lstatus = loader?._nextspace._status || 0;
+
+                if (locale === fnLocale) {
+                    return;
+                }
+                if (lstatus > 0 || !loader) {
+                    //loaded, change locale directly
+                    translationHolder.changeLocale(fnLocale);
+                    setLocale(fnLocale);
+                } else {
+                    loader.preload().then(() => {
+                        translationHolder.changeLocale(fnLocale);
+                        setLocale(fnLocale);
+                    });
+
+                }
             },
             l: (key, args) => {
-                return translationHolder?.l(key, args) || key;
+                return translationHolder.l(key, args) || key;
             },
 
         }
         return {
             locales: translationLocales,
             _registerTranslation: (locale, translation) => {
-                translationHolder?.register(locale, translation);
+                translationHolder.register(locale, translation);
 
                 //I did a trick here, since TransationLoader is rendered before children, so it can register language without rerender for
                 //1.by _refash(), it will cause setState in rendering error (client)
@@ -84,16 +100,17 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             },
             i18n: i18n
         } as (Workspace & WorkspacePri)
-    }, [defaultLocale, locale]);
+    }, [locale, translations, translationHolder]);
 
-    const TransationLoader = (translations && translations.find((t) => t.locale === locale)?.lazyLoader);
-
-    
+    const TransationLoader = assertTranslationLoader(locale, translations)
 
     return <div className={clsx(styles.workspace, className)}>
         <WorkspaceHolder.Provider value={workspace}>
-            <Suspense fallback={<DelayedFallback />}>
-                {TransationLoader ? <TransationLoader>{children}</TransationLoader> : children}
+            <Suspense fallback={
+                <Modal>
+                    <p>Loading</p>
+                </Modal>}>
+                {TransationLoader ? <TransationLoader locale={locale}>{children}</TransationLoader> : children}
             </Suspense>
         </WorkspaceHolder.Provider>
     </div>
