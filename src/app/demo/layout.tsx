@@ -4,10 +4,10 @@
  * @author: Dennis Chen
  */
 
-import { Metadata } from 'next';
-import { cookies } from 'next/headers';
-import WorkspaceLayout from "./WorkspaceLayout";
-import { COOKIE_LOCALE } from './constants';
+import { Metadata } from 'next'
+import { cookies } from 'next/headers'
+import WorkspaceLayout from "./WorkspaceLayout"
+import { COOKIE_LOCALE } from './constants'
 
 const defaultLocale = "en"
 
@@ -24,7 +24,7 @@ export type LayoutProps = {
 
 export default function DemoLayout({ children }: LayoutProps) {
     const cookieStore = cookies()
-    let cookieLocale = cookieStore.get(COOKIE_LOCALE)?.value || defaultLocale;
+    let cookieLocale = cookieStore.get(COOKIE_LOCALE)?.value || defaultLocale
 
     return <WorkspaceLayout defaultLocale={cookieLocale}>
         {children}

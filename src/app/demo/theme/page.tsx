@@ -4,7 +4,7 @@
  * @author: Dennis Chen
  */
 import { useContext } from "react"
-import demoStyles from "../demo.module.scss"
+import demoStyles from "@/nextspace/app/demo.module.scss"
 import WorkspaceHolder from "@/nextspace/contexts/workspace"
 
 
@@ -12,8 +12,8 @@ type PageProps = {
 }
 
 export default function NextspacePage({ }: PageProps) {
-    const workspace = useContext(WorkspaceHolder);
-    const { i18n } = workspace;
+    const workspace = useContext(WorkspaceHolder)
+    const { i18n } = workspace
 
     return <main className={demoStyles.main}>
         TODO

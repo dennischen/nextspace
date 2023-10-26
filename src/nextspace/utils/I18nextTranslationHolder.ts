@@ -3,27 +3,28 @@
  * @author: Dennis Chen
  */
 
-import { TranslationHolder } from '@/nextspace/types';
-import i18next, { InitOptions, i18n } from 'i18next';
+import { TranslationHolder } from '@/nextspace/types'
+import type { InitOptions, i18n as I18nextInstance } from 'i18next'
 
 
-function handleLabel(i18: i18n, key: string, options: any = {}) {
-    const { returnObjects, ...other } = options;
-    const val = i18.t(key, { returnObjects: true, ...other }) as any;
+function handleLabel(i18: I18nextInstance, key: string, options: any = {}) {
+    const { returnObjects, ...other } = options
+    const val = i18.t(key, { returnObjects: true, ...other }) as any
     if (returnObjects || typeof val === 'string') {
-        return val;
+        return val
     }
-    return val['@'] || `[key:${key}`;
+    return val['@'] || `[key:${key}`
 }
 
 export default class I18nextTranslationHolder implements TranslationHolder {
 
-    i18: i18n
+    i18: I18nextInstance
 
     constructor(
+        i18n: I18nextInstance,
         opt: { fallbackLng?: string, fallbackTranslation?: { [key: string]: any }, debug?: boolean } = {}
     ) {
-        this.i18 = i18next.createInstance()
+        this.i18 = i18n
 
         const initOpt: InitOptions = {
             debug: opt?.debug,
@@ -35,12 +36,12 @@ export default class I18nextTranslationHolder implements TranslationHolder {
         }
 
         if (opt?.fallbackLng) {
-            initOpt.lng = opt.fallbackLng;
-            initOpt.fallbackLng = opt.fallbackLng;
+            initOpt.lng = opt.fallbackLng
+            initOpt.fallbackLng = opt.fallbackLng
             if (opt?.fallbackTranslation) {
                 initOpt.resources = {}
                 initOpt.resources[opt.fallbackLng] = {}
-                initOpt.resources[opt.fallbackLng].translation = opt.fallbackTranslation;
+                initOpt.resources[opt.fallbackLng].translation = opt.fallbackTranslation
             }
         }
         this.i18.init(initOpt)
@@ -51,12 +52,12 @@ export default class I18nextTranslationHolder implements TranslationHolder {
     }
 
     changeLocale(locale: string) {
-        const { i18 } = this;
+        const { i18 } = this
         this.i18.changeLanguage(locale)
     }
 
     l(key: string, args?: { [key: string]: string }) {
-        return handleLabel(this.i18, key, args);
+        return handleLabel(this.i18, key, args)
     }
 }
 

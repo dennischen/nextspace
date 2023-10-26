@@ -5,17 +5,19 @@
  * @file-created: 2023-10-23
  * @author: Dennis Chen
  */
-import WorkspaceBoundary from '@/nextspace/WorkspaceBoundary';
-import { WorkspaceConfig } from '@/nextspace/types';
-import I18nextTranslationHolder from '@/nextspace/utils/I18nextTranslationHolder';
-import { lazy, useMemo } from 'react';
-import demoStyles from "./demo.module.scss";
+import WorkspaceBoundary from '@/nextspace/WorkspaceBoundary'
+import { WorkspaceConfig } from '@/nextspace/types'
+import I18nextTranslationHolder from '@/nextspace/utils/I18nextTranslationHolder'
+import { useMemo } from 'react'
+import demoStyles from "./demo.module.scss"
 
-import Banner from "./Banner";
-import Footer from './Footer';
-import fallbackTranslation from "./i18n/en.json";
-import "./variables.scss";
-import translationLoader from '@/nextspace/components/translationLoader';
+import translationLoader from '@/nextspace/components/translationLoader'
+import i18next from 'i18next'
+import Banner from "./Banner"
+import Footer from './Footer'
+import fallbackTranslation from "./i18n/en.json"
+import "./variables.scss"
+
 const fallbackLocale = "en"
 
 const EnLoader = translationLoader("en", () => import('./i18n/EnLoader'))
@@ -30,11 +32,11 @@ export type WorkspaceLayoutProps = {
 
 export default function WorkspaceLayout({ defaultLocale, children }: WorkspaceLayoutProps) {
 
-    defaultLocale = translations.find((l) => l.locale === defaultLocale)?.locale || translations[0].locale;
+    defaultLocale = translations.find((l) => l.locale === defaultLocale)?.locale || translations[0].locale
 
     const config = useMemo(() => {
         return {
-            translationHolder: new I18nextTranslationHolder({
+            translationHolder: new I18nextTranslationHolder(i18next.createInstance(), {
                 fallbackLng: fallbackLocale,
                 fallbackTranslation: fallbackTranslation
             })

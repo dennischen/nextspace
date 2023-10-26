@@ -3,7 +3,7 @@
  * @author: Dennis Chen
  */
 
-import { TranslationHolder } from '@/nextspace/types';
+import { TranslationHolder } from '@/nextspace/types'
 
 export default class SimpleTranslationHolder implements TranslationHolder {
 
@@ -11,18 +11,18 @@ export default class SimpleTranslationHolder implements TranslationHolder {
     private locale: string = "";
 
     register(locale: string, translation: { [key: string]: any }) {
-        const { translationMap } = this;
-        translationMap.set(locale, translation);
+        const { translationMap } = this
+        translationMap.set(locale, translation)
     }
 
     changeLocale(locale: string) {
-        this.locale = locale;
+        this.locale = locale
     }
 
     l(key: string, args?: { [key: string]: string }) {
-        const { locale, translationMap } = this;
-        const val = translationMap.get(locale)?.[key];
-        return val || key;
+        const { locale, translationMap } = this
+        const val = translationMap.get(locale)?.[key]
+        return val || key
     }
 }
 

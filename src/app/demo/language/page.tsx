@@ -4,24 +4,24 @@
  * @author: Dennis Chen
  */
 
-import { COOKIE_LOCALE } from "@/app/demo/constants";
-import demoStyles from "@/app/demo/demo.module.scss";
-import WorkspaceHolder from "@/nextspace/contexts/workspace";
-import { useContext } from "react";
-import Cookies from 'universal-cookie';
+import { COOKIE_LOCALE } from "@/app/demo/constants"
+import demoStyles from "@/app/demo/demo.module.scss"
+import WorkspaceHolder from "@/nextspace/contexts/workspace"
+import { useContext } from "react"
+import Cookies from 'universal-cookie'
 
 type PageProps = {
 }
 
 export default function LanguagePage({ }: PageProps) {
-    const workspace = useContext(WorkspaceHolder);
-    const { i18n } = workspace;
+    const workspace = useContext(WorkspaceHolder)
+    const { i18n } = workspace
 
     const onLanguageChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
-        i18n.changeLocale(evt.target.value);
+        i18n.changeLocale(evt.target.value)
 
-        const cookies = new Cookies(null, { path: '/' });
-        cookies.set(COOKIE_LOCALE, evt.target.value);
+        const cookies = new Cookies(null, { path: '/' })
+        cookies.set(COOKIE_LOCALE, evt.target.value)
     }
 
     return <main className={demoStyles.main}>
