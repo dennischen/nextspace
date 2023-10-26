@@ -14,12 +14,12 @@ import SimpleTranslationHolder from "./utils/SimplIeTranslationHolder"
 import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
 import './global.scss'
 
-let defaultConfig: WorkspaceConfig = {
+let defaultConfig: Required<WorkspaceConfig> = {
     translationHolder: new SimpleTranslationHolder(),
     progressIndicator: new SimpleProgressIndicator()
 }
 
-export function setDefaultConfig(config: Partial<WorkspaceConfig>) {
+export function setDefaultConfig(config: WorkspaceConfig) {
     defaultConfig = Object.assign({}, defaultConfig, config)
 }
 
@@ -28,7 +28,7 @@ export type WorkspaceBoundaryProps = {
     className?: string
     defaultLocale?: string
     translations?: TranslationLoaderComponent<React.ComponentType<TranslationLoaderProps>>[]
-    config?: Partial<WorkspaceConfig>
+    config?: WorkspaceConfig
 }
 
 
@@ -47,7 +47,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     const { children, className, defaultLocale = "", translations = [] } = props
     let { config = {} } = props
 
-    const mergedConfig = Object.assign({}, defaultConfig, config) as WorkspaceConfig
+    const mergedConfig = Object.assign({}, defaultConfig, config) as Required<WorkspaceConfig>
 
     //check defaultLocal in translations
     assertTranslationLoader(defaultLocale, translations)
@@ -77,12 +77,12 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
                     translationHolder.changeLocale(fnLocale)
                     setLocale(fnLocale)
                 } else {
-                    progressIndicator.start();
+                    progressIndicator.start()
                     loader.preload().then(() => {
                         translationHolder.changeLocale(fnLocale)
                         setLocale(fnLocale)
-                    }).finally(()=>{
-                        progressIndicator.end();
+                    }).finally(() => {
+                        progressIndicator.end()
                     })
 
                 }
@@ -103,7 +103,8 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
                 // _refresh(); 
             },
-            i18n: i18n
+            i18n: i18n,
+            progressIndicator
         } as (Workspace & WorkspacePri)
     }, [locale, translations, translationHolder, progressIndicator])
 

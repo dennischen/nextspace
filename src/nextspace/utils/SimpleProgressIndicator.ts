@@ -23,55 +23,52 @@ export default class SimpleProgressIndicator implements ProgressIndicator {
     constructor({ container, delay }: { container?: HTMLElement, delay?: number } = {}) {
         this.container = container || typeof document === 'undefined' ? undefined : document.body
         this.delay = delay || 500
-
     }
 
     start = () => {
-        const { container, count, delay } = this
-        this.count = count + 1
+        const { container, delay } = this
+        this.count++
 
-        if (count > 0) {
+        if (this.count > 1) {
             return
         }
 
         if (!container) {
             console.log("Progress started at ", new Date())
-            return
-        }
-        if (this.indicator) {
-            return
+        } else if (!this.indicator) {
+            const indicator = this.indicator = document.createElement("div")
+            indicator.className = INDICATOR_CLASS_NAME
+            if (delay > 0) {
+                indicator.className += ' hide'
+                setTimeout(() => {
+                    //still showing
+                    if (this.indicator) {
+                        this.indicator.className = INDICATOR_CLASS_NAME
+                    }
+                }, delay)
+            }
+
+            indicator.innerHTML = `<img src="${spin.src}" width="32px" height="32px"/>`
+
+            container.appendChild(indicator)
         }
 
-        const indicator = this.indicator = document.createElement("div")
-        indicator.className = INDICATOR_CLASS_NAME
-        if (delay > 0) {
-            indicator.className += ' hide'
-            setTimeout(() => {
-                //still showing
-                if (this.indicator) {
-                    this.indicator.className = INDICATOR_CLASS_NAME
-                }
-            }, delay)
-        }
 
-        indicator.innerHTML = `<img src="${spin.src}" width="32px" height="32px"/>`
-
-        container.appendChild(indicator)
     }
-    end = () => {
-        const { container, count } = this
-        this.count = count - 1
+    end = (force?: boolean) => {
+        const { container } = this
+        this.count--
 
-        if (count > 1) {
+        if (!force && this.count > 0) {
             return
+        }
+        if (force) {
+            this.count = 0
         }
 
         if (!container) {
             console.log("Progress ended at ", new Date())
-            return
-        }
-
-        if (this.indicator) {
+        } else if (this.indicator) {
             container.removeChild(this.indicator)
             this.indicator = undefined
         }

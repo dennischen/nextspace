@@ -4,8 +4,9 @@
  */
 
 export type Workspace = {
-    locales: string[]
-    i18n: I18n
+    readonly locales: string[]
+    readonly i18n: I18n
+    readonly progressIndicator: ProgressIndicator
 }
 
 export type WorkspacePri = {
@@ -13,8 +14,8 @@ export type WorkspacePri = {
 }
 
 export type WorkspaceConfig = {
-    translationHolder: TranslationHolder
-    progressIndicator: ProgressIndicator
+    translationHolder?: TranslationHolder
+    progressIndicator?: ProgressIndicator
 }
 
 export type I18n = {
@@ -31,6 +32,6 @@ export type TranslationHolder = {
 
 export type ProgressIndicator = {
     start: () => void
-    end: () => void
+    end: (force?: boolean) => void
 }
 

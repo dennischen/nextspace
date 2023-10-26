@@ -10,8 +10,6 @@ export default class NProgressIndicator implements ProgressIndicator {
 
     private count = 0;
 
-    private show = false;
-
     private nprogress: NProgress
 
     constructor(nprogress: NProgress, { delay }: { delay?: number } = {}) {
@@ -21,36 +19,36 @@ export default class NProgressIndicator implements ProgressIndicator {
     }
 
     start = () => {
-        const { nprogress, count, delay } = this
-        this.count = count + 1
+        const { nprogress, delay } = this
+        this.count++
 
-        if (count > 0) {
+        if (this.count > 1) {
             return
         }
 
-        this.show = true
         if (delay > 0) {
             setTimeout(() => {
                 //still showing
-                if (this.show) {
-                    this.nprogress.start()
+                if (this.count > 0) {
+                    nprogress.start()
                 }
             }, delay)
         } else {
-            this.nprogress.start()
+            nprogress.start()
         }
 
 
     }
-    end = () => {
-        const { nprogress, count } = this
-        this.count = count - 1
+    end = (force?: boolean) => {
+        const { nprogress } = this
+        this.count--
 
-        if (count > 1) {
+        if (!force && this.count > 0) {
             return
         }
-
-        this.show = false
-        this.nprogress.done()
+        if(force){
+            this.count = 0;
+        }
+        nprogress.done(force)
     }
 }
