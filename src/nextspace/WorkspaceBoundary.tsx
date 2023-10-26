@@ -11,10 +11,12 @@ import WorkspaceHolder from "./contexts/workspace"
 import styles from "./nextspace.module.scss"
 import { I18n, Workspace, WorkspaceConfig, WorkspacePri } from "./types"
 import SimpleTranslationHolder from "./utils/SimplIeTranslationHolder"
-import './variables.scss'
+import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
+import './global.scss'
 
 let defaultConfig: WorkspaceConfig = {
-    translationHolder: new SimpleTranslationHolder()
+    translationHolder: new SimpleTranslationHolder(),
+    progressIndicator: new SimpleProgressIndicator()
 }
 
 export function setDefaultConfig(config: Partial<WorkspaceConfig>) {
@@ -56,7 +58,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     //     setRefresh(refresh + 1);
     // }
 
-    const translationHolder = mergedConfig.translationHolder
+    const { translationHolder, progressIndicator } = mergedConfig
     translationHolder.changeLocale(locale)
 
     const workspace = useMemo(() => {
@@ -75,9 +77,12 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
                     translationHolder.changeLocale(fnLocale)
                     setLocale(fnLocale)
                 } else {
+                    progressIndicator.start();
                     loader.preload().then(() => {
                         translationHolder.changeLocale(fnLocale)
                         setLocale(fnLocale)
+                    }).finally(()=>{
+                        progressIndicator.end();
                     })
 
                 }
@@ -100,7 +105,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             },
             i18n: i18n
         } as (Workspace & WorkspacePri)
-    }, [locale, translations, translationHolder])
+    }, [locale, translations, translationHolder, progressIndicator])
 
     const TransationLoader = assertTranslationLoader(locale, translations)
 

@@ -1,5 +1,6 @@
 //https://github.com/ianschmitz/react-lazy-with-preload/blob/master/src/index.ts
 import { ComponentType, createElement, forwardRef, lazy, useRef } from "react"
+import timeout from "../utils/timeout"
 
 export type PreloadableComponent<T extends ComponentType<any>> = T & {
     preload: () => Promise<T>
@@ -30,8 +31,13 @@ export function lazyWithPreload<T extends ComponentType<any>>(
     LazyWithPreload.preload = () => {
         if (!factoryPromise) {
             factoryPromise = factory().then((module) => {
+                
                 PreloadedComponent = module.default
                 return PreloadedComponent
+                // return timeout(10000).then(()=>{
+                //     PreloadedComponent = module.default
+                //     return PreloadedComponent
+                // })
             })
         }
 

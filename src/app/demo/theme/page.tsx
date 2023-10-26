@@ -4,7 +4,7 @@
  * @author: Dennis Chen
  */
 import { useContext } from "react"
-import demoStyles from "@/nextspace/app/demo.module.scss"
+import demoStyles from "@/app/demo/demo.module.scss"
 import WorkspaceHolder from "@/nextspace/contexts/workspace"
 
 

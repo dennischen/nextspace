@@ -18,6 +18,7 @@ Open [http://localhost](http://localhost) with your browser to see the result.
 ## Production
 
 ```bash
+# build
 yarn build
 # then
 yarn start

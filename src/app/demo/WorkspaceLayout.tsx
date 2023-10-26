@@ -12,18 +12,22 @@ import { useMemo } from 'react'
 import demoStyles from "./demo.module.scss"
 
 import translationLoader from '@/nextspace/components/translationLoader'
+import NProgressIndicator from '@/nextspace/utils/NProgressIndicator'
 import i18next from 'i18next'
 import Banner from "./Banner"
 import Footer from './Footer'
+import "./global.scss"
 import fallbackTranslation from "./i18n/en.json"
-import "./variables.scss"
+
+import 'nprogress/nprogress.css'
+import nProgress from 'nprogress'
 
 const fallbackLocale = "en"
 
-const EnLoader = translationLoader("en", () => import('./i18n/EnLoader'))
-const ZhLoader = translationLoader("zh", () => import('./i18n/ZhLoader'))
+const EnTranslationLoader = translationLoader("en", () => import('./i18n/EnTranslationLoader'))
+const ZhTranslationLoader = translationLoader("zh", () => import('./i18n/ZhTranslatioLoader'))
 
-const translations = [EnLoader, ZhLoader]
+const translations = [EnTranslationLoader, ZhTranslationLoader]
 
 export type WorkspaceLayoutProps = {
     defaultLocale: string,
@@ -39,7 +43,8 @@ export default function WorkspaceLayout({ defaultLocale, children }: WorkspaceLa
             translationHolder: new I18nextTranslationHolder(i18next.createInstance(), {
                 fallbackLng: fallbackLocale,
                 fallbackTranslation: fallbackTranslation
-            })
+            }),
+            progressIndicator: new NProgressIndicator(nProgress)
         } as WorkspaceConfig
     }, [])
 

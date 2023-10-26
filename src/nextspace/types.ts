@@ -14,6 +14,7 @@ export type WorkspacePri = {
 
 export type WorkspaceConfig = {
     translationHolder: TranslationHolder
+    progressIndicator: ProgressIndicator
 }
 
 export type I18n = {
@@ -28,4 +29,8 @@ export type TranslationHolder = {
     l(key: string, args?: { [key: string]: string }): string
 }
 
+export type ProgressIndicator = {
+    start: () => void
+    end: () => void
+}
 
