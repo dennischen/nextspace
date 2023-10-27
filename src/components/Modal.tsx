@@ -1,6 +1,6 @@
 'use client'
 
-import styles from "@/nextspace/nextspace.module.scss"
+import styles from "@nextspace/nextspace.module.scss"
 import clsx from "clsx"
 import { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
