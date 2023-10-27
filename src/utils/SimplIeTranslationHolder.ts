@@ -3,7 +3,7 @@
  * @author: Dennis Chen
  */
 
-import { TranslationHolder } from '@/nextspace/types'
+import { TranslationHolder } from '@nextspace/types'
 
 export default class SimpleTranslationHolder implements TranslationHolder {
 

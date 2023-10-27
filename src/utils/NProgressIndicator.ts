@@ -2,7 +2,7 @@
  * @file-created: 2023-10-26
  * @author: Dennis Chen
  */
-import { ProgressIndicator } from '@/nextspace/types'
+import { ProgressIndicator } from '@nextspace/types'
 import type { NProgress } from 'nprogress'
 
 export default class NProgressIndicator implements ProgressIndicator {

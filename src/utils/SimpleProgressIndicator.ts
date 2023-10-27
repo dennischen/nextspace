@@ -2,9 +2,9 @@
  * @file-created: 2023-10-26
  * @author: Dennis Chen
  */
-import { ProgressIndicator } from '@/nextspace/types'
+import { ProgressIndicator } from '@nextspace/types'
 
-import spin from '@/nextspace/assets/spin.svg'
+import spin from '@nextspace/assets/spin.svg'
 
 
 const INDICATOR_CLASS_NAME = 'nextspace-spi'

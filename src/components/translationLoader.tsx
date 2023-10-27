@@ -1,4 +1,4 @@
-import lazyWithPreload, { PreloadableComponent } from '@/nextspace/components/lazyWithPreload'
+import lazyWithPreload, { PreloadableComponent } from '@nextspace/components/lazyWithPreload'
 
 
 

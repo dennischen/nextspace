@@ -1,13 +1,13 @@
 {
     "name": "nextspace",
     "version": "0.1.0",
-    "private": true,
+    "private": "false",
     "scripts": {
-        "dev": "next dev -p 80",
-        "build": "next build",
-        "start": "next start -p 80",
-        "buildstart": "next build & next start -p 80",
-        "lint": "next lint"
+        "clean": "rimraf dist/",
+        "compile": "tsc -p tsconfig.json",
+        "copy-files": "copyfiles -u 1 src/**/*.svg src/**/*.scss dist/",
+        "build": "yarn compile && yarn copy-files",
+        "release": "node build-help.js --release-package-json"
     },
     "dependencies": {
         "clsx": "^2.0.0",
@@ -16,16 +16,19 @@
         "nprogress": "^0.2.0",
         "react": "^18",
         "react-dom": "^18",
-        "sass": "^1.69.4",
-        "universal-cookie": "^6.1.1"
+        "sass": "^1.69.4"
     },
     "devDependencies": {
         "@types/node": "^20",
         "@types/nprogress": "^0.2.2",
         "@types/react": "^18",
         "@types/react-dom": "^18",
+        "copyfiles": "^2.4.1",
+        "fs-extra": "^11.1.1",
         "eslint": "^8",
         "eslint-config-next": "13.5.6",
-        "typescript": "^5"
+        "rimraf": "^5.0.5",
+        "typescript": "^5",
+        "yargs": "^17.7.2"
     }
 }
