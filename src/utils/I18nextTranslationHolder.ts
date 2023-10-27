@@ -3,7 +3,7 @@
  * @author: Dennis Chen
  */
 
-import { TranslationHolder } from '@/nextspace/types'
+import { TranslationHolder } from '@nextspace/types'
 import type { InitOptions, i18n as I18nextInstance } from 'i18next'
 
 

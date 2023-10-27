@@ -4,8 +4,8 @@
  * @author: Dennis Chen
  */
 
-import WorkspaceHolder from "@/nextspace/contexts/workspace"
-import { WorkspacePri } from "@/nextspace/types"
+import WorkspaceHolder from "@nextspace/contexts/workspace"
+import { WorkspacePri } from "@nextspace/types"
 import { useContext } from "react"
 
 export type TranslationRegisterProps = {

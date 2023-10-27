@@ -3,7 +3,7 @@
  * @author: Dennis Chen
  */
 
-import { Workspace } from "@/nextspace/types";
+import { Workspace } from "@nextspace/types";
 import { createContext } from "react";
 
 

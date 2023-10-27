@@ -1,3 +1,5 @@
+/// <reference types="next" /> 
+/// <reference types="next/image-types/global" />
 /*
  * @file-created: 2023-10-23
  * @author: Dennis Chen

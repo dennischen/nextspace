@@ -3,11 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev -p 80",
-        "build": "next build",
-        "start": "next start -p 80",
-        "buildstart": "next build & next start -p 80",
-        "lint": "next lint"
+        "build": "tsc"
     },
     "dependencies": {
         "clsx": "^2.0.0",
@@ -16,8 +12,7 @@
         "nprogress": "^0.2.0",
         "react": "^18",
         "react-dom": "^18",
-        "sass": "^1.69.4",
-        "universal-cookie": "^6.1.1"
+        "sass": "^1.69.4"
     },
     "devDependencies": {
         "@types/node": "^20",
