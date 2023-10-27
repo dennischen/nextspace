@@ -1,29 +1,32 @@
 {
     "compilerOptions": {
         "module": "es2020",
-        "moduleResolution": "node",
         "target": "es5",
+        "noImplicitAny": true,
+        "esModuleInterop": true,
         "lib": [
             "dom",
             "dom.iterable",
             "esnext"
         ],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "strict": true,
-        "noEmit": true,
-        "esModuleInterop": true,
-        "resolveJsonModule": true,
-        "isolatedModules": true,
         "jsx": "preserve",
-        "incremental": true,
+        "outDir": "dist",
+        "skipLibCheck": true,
+        "allowJs": true,
         "paths": {
             "@nextspace/*": [
                 "./src/*"
             ]
         },
-        "outDir": "dist",
-        "noImplicitAny": true,
+        "moduleResolution": "node",        
+        "resolveJsonModule": true,
+        "strict": true,
+        "declaration": true,
+        "sourceMap": false,
+        
+        // "noEmit": true,
+        // "isolatedModules": true,
+        // "incremental": true,
     },
     "include": [
         "src/**/*.ts",
