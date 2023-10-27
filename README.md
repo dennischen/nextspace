@@ -1,29 +1,28 @@
 
-This project bases on nextjs app and provides ability to
+Nextspace is a workspace context provides abilities for a nextjs application to : 
 * Cookie/header/session based i18n locale (no /en/page, /zh/page in url) and load translation with lazy trunk when reqired
 * More...
 
-## Getting Started
 
-Run the development server:
 
-```bash
-yarn install
+## Build
 
-yarn dev
-```
-
-Open [http://localhost](http://localhost) with your browser to see the result.
-
-## Production
+Compile and copy required resources to dist
 
 ```bash
-# build
+yarn clean
+
 yarn build
-# then
-yarn start
-
-# or just
-yarn buildstart
 ```
 
+## Release
+
+Update required information before publish to repository
+
+```bash
+yarn release
+```
+
+## Demo
+
+Yon can run the demo app (https://github.com/dennischen/nextspace-demo) on local
