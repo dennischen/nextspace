@@ -5,7 +5,6 @@
  */
 
 import WorkspaceHolder from "@nextspace/contexts/workspace"
-import { WorkspacePri } from "@nextspace/types"
 import { useContext } from "react"
 
 export type TranslationRegisterProps = {
@@ -15,13 +14,10 @@ export type TranslationRegisterProps = {
 }
 
 export default function TranslationRegister({ locale, translation, children }: TranslationRegisterProps) {
-    const workspace = useContext(WorkspaceHolder) as any as WorkspacePri
+    const workspace = useContext(WorkspaceHolder)
 
     if (locale && translation) {
-        if (!workspace._registerTranslation) {
-            throw 'workspace not found, you should use Workspaceboundary to wrap your layout or page'
-        }
-        workspace._registerTranslation(locale, translation)
+        workspace.registerTranslation(locale, translation)
     }
 
     return children

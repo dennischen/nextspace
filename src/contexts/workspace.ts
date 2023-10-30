@@ -6,8 +6,13 @@
 import { Workspace } from "@nextspace/types";
 import { createContext } from "react";
 
+const checker = new Proxy({} as any as Workspace, {
+    get() {
+        throw 'workspace not found, you should use Workspaceboundary to wrap your layout or page'
+    }
+})
 
-const WorkspaceHolder = createContext({} as any as Workspace);
+const WorkspaceHolder = createContext(checker);
 WorkspaceHolder.displayName = "WorkspaceContext"
 
 export default WorkspaceHolder

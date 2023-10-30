@@ -1,6 +1,6 @@
 //https://github.com/ianschmitz/react-lazy-with-preload/blob/master/src/index.ts
 import { ComponentType, createElement, forwardRef, lazy, useRef } from "react"
-import timeout from "../utils/timeout"
+// import timeout from "@nextspace/utils/timeout"
 
 export type PreloadableComponent<T extends ComponentType<any>> = T & {
     preload: () => Promise<T>

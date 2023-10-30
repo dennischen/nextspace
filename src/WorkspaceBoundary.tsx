@@ -4,13 +4,13 @@
  * @author: Dennis Chen
  */
 import clsx from "clsx"
-import { Suspense, useMemo, useState } from "react"
+import { Suspense, useContext, useMemo, useState } from "react"
 import Modal from "./components/Modal"
 import { TranslationLoaderComponent, TranslationLoaderProps } from "./components/translationLoader"
 import WorkspaceHolder from "./contexts/workspace"
 import styles from "./nextspace.module.scss"
-import { I18n, Workspace, WorkspaceConfig, WorkspacePri } from "./types"
-import SimpleTranslationHolder from "./utils/SimplIeTranslationHolder"
+import { I18n, Process, Workspace, WorkspaceConfig } from "./types"
+import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
 import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
 import './global.scss'
 
@@ -32,7 +32,7 @@ export type WorkspaceBoundaryProps = {
 }
 
 
-function assertTranslationLoader(locale: string | undefined,
+function assertTranslation(locale: string | undefined,
     translations: TranslationLoaderComponent<React.ComponentType<TranslationLoaderProps>>[]) {
     if (locale) {
         const translation = translations.find((t) => t.locale === locale)
@@ -50,7 +50,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     const mergedConfig = Object.assign({}, defaultConfig, config) as Required<WorkspaceConfig>
 
     //check defaultLocal in translations
-    assertTranslationLoader(defaultLocale, translations)
+    assertTranslation(defaultLocale, translations)
 
     const [locale, setLocale] = useState(defaultLocale || translations.find(t => true)?.locale || '')
     // const [refresh, setRefresh] = useState(0);
@@ -59,56 +59,62 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     // }
 
     const { translationHolder, progressIndicator } = mergedConfig
-    translationHolder.changeLocale(locale)
+    translationHolder.change(locale)
 
     const workspace = useMemo(() => {
+        //i18n
         const translationLocales = translations && translations.map((t) => t.locale) || []
         const i18n: I18n = {
             locale,
-            changeLocale: (fnLocale) => {
-                const loader = assertTranslationLoader(fnLocale, translations)
-                const lstatus = loader?._nextspace._status || 0
-
-                if (locale === fnLocale) {
-                    return
-                }
-                if (lstatus > 0 || !loader) {
-                    //loaded, change locale directly
-                    translationHolder.changeLocale(fnLocale)
-                    setLocale(fnLocale)
-                } else {
-                    progressIndicator.start()
-                    loader.preload().then(() => {
-                        translationHolder.changeLocale(fnLocale)
-                        setLocale(fnLocale)
-                    }).finally(() => {
-                        progressIndicator.end()
-                    })
-
-                }
-            },
             l: (key, args) => {
-                return translationHolder.l(key, args) || key
+                return translationHolder.label(key, args) || key
             },
 
         }
-        return {
+        const onChangeLocale = (newLocale: string) => {
+            const loader = assertTranslation(newLocale, translations)
+            const lstatus = loader?._nextspace._status || 0
+
+            if (locale === newLocale) {
+                return
+            }
+            if (lstatus > 0 || !loader) {
+                //loaded, change locale directly
+                translationHolder.change(newLocale)
+                setLocale(newLocale)
+            } else {
+                progressIndicator.start()
+                loader.preload().then(() => {
+                    translationHolder.change(newLocale)
+                    setLocale(newLocale)
+                }).finally(() => {
+                    progressIndicator.end()
+                })
+
+            }
+        }
+
+        //process
+        const withProcessIndicator = (proc:Process)=>{
+            progressIndicator.start()
+            return proc().finally(() => {
+                progressIndicator.end()
+            })
+        }
+        const workspace: Workspace = {
             locales: translationLocales,
-            _registerTranslation: (locale, translation) => {
+            onChangeLocale,
+            registerTranslation: (locale, translation) => {
                 translationHolder.register(locale, translation)
-
-                //I did a trick here, since TransationLoader is rendered before children, so it can register language without rerender for
-                //1.by _refash(), it will cause setState in rendering error (client)
-                //2.by useEffect is not called in server, it will cause hydration warn (html difference between first server-client rendering)
-
-                // _refresh(); 
             },
-            i18n: i18n,
-            progressIndicator
-        } as (Workspace & WorkspacePri)
+            i18n,
+            progressIndicator,
+            withProcessIndicator
+        }
+        return workspace;
     }, [locale, translations, translationHolder, progressIndicator])
 
-    const TransationLoader = assertTranslationLoader(locale, translations)
+    const TransationLoader = assertTranslation(locale, translations)
 
     return <div className={clsx(styles.workspace, className)}>
         <WorkspaceHolder.Provider value={workspace}>

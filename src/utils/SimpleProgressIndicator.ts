@@ -25,6 +25,10 @@ export default class SimpleProgressIndicator implements ProgressIndicator {
         this.delay = delay || 500
     }
 
+    get loading(){
+        return this.count > 0;
+    }
+
     start = () => {
         const { container, delay } = this
         this.count++
@@ -62,7 +66,7 @@ export default class SimpleProgressIndicator implements ProgressIndicator {
         if (!force && this.count > 0) {
             return
         }
-        if (force) {
+        if (force || this.count < 0) {
             this.count = 0
         }
 

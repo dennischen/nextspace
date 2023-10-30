@@ -9,31 +9,34 @@ export type Workspace = {
     readonly locales: string[]
     readonly i18n: I18n
     readonly progressIndicator: ProgressIndicator
-}
-
-export type WorkspacePri = {
-    _registerTranslation(locale: string, translation: { [key: string]: any }): void
+    onChangeLocale(newLocale: string): void
+    registerTranslation(locale: string, translation: { [key: string]: any }): void
+    withProcessIndicator<T = any>(process: Process<T>): Promise<T>
 }
 
 export type WorkspaceConfig = {
-    translationHolder?: TranslationHolder
-    progressIndicator?: ProgressIndicator
+    readonly translationHolder?: TranslationHolder
+    readonly progressIndicator?: ProgressIndicator
 }
 
 export type I18n = {
     readonly locale: string
-    changeLocale(locale: string): void
     l(key: string, args?: { [key: string]: string }): string
 }
 
 export type TranslationHolder = {
-    register: (locale: string, translation: { [key: string]: any }) => void
-    changeLocale: (locale: string) => void
-    l(key: string, args?: { [key: string]: string }): string
+    register(locale: string, translation: { [key: string]: any }): void
+    change(newLocale: string): void
+    label(key: string, args?: { [key: string]: string }): string
+}
+
+export type Process<T = any> = {
+    (): Promise<T>
 }
 
 export type ProgressIndicator = {
     start: () => void
     end: (force?: boolean) => void
+    readonly loading: boolean
 }
 

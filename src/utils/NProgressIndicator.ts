@@ -18,6 +18,10 @@ export default class NProgressIndicator implements ProgressIndicator {
 
     }
 
+    get loading(){
+        return this.count > 0;
+    }
+
     start = () => {
         const { nprogress, delay } = this
         this.count++
@@ -46,7 +50,7 @@ export default class NProgressIndicator implements ProgressIndicator {
         if (!force && this.count > 0) {
             return
         }
-        if(force){
+        if(force || this.count < 0){
             this.count = 0;
         }
         nprogress.done(force)
