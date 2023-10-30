@@ -13,6 +13,8 @@ Compile and copy required resources to dist
 yarn clean
 
 yarn build
+# or watch for running nextspace in nextjs dev
+yarn build-watch
 ```
 
 ## Release
