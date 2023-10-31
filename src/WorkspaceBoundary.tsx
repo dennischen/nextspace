@@ -13,6 +13,7 @@ import { I18n, Process, Workspace, WorkspaceConfig } from "./types"
 import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
 import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
 import './global.scss'
+import { sequential } from "./utils/process"
 
 let defaultConfig: Required<WorkspaceConfig> = {
     translationHolder: new SimpleTranslationHolder(),
@@ -71,7 +72,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             },
 
         }
-        const onChangeLocale = (newLocale: string) => {
+        const changeLocale = (newLocale: string) => {
             const loader = assertTranslation(newLocale, translations)
             const lstatus = loader?._nextspace._status || 0
 
@@ -95,15 +96,15 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
         }
 
         //process
-        const withProcessIndicator = (proc:Process)=>{
+        const withProcessIndicator = (...processes: Process[]) => {
             progressIndicator.start()
-            return proc().finally(() => {
+            return sequential(...processes).finally(() => {
                 progressIndicator.end()
             })
         }
         const workspace: Workspace = {
             locales: translationLocales,
-            onChangeLocale,
+            changeLocale: changeLocale,
             registerTranslation: (locale, translation) => {
                 translationHolder.register(locale, translation)
             },
@@ -111,7 +112,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             progressIndicator,
             withProcessIndicator
         }
-        return workspace;
+        return workspace
     }, [locale, translations, translationHolder, progressIndicator])
 
     const TransationLoader = assertTranslation(locale, translations)

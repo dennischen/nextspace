@@ -19,6 +19,9 @@ export function cancelableSequential<T = any>(
                 resolve(undefined as any)
             }
             const [nextproc, ...rest] = processes
+            if(typeof nextproc !== 'function'){
+                throw `process is not a function, is ${typeof nextproc}`
+            }
             const promise = nextproc()
 
             promise

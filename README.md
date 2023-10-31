@@ -1,13 +1,14 @@
 
 Nextspace is a workspace context provides abilities for a nextjs application to : 
-* Cookie/header/session based i18n locale (no /en/page, /zh/page in url) and load translation with lazy trunk when reqired
+* I18n label translation base on cookie/header/session (no /en/page, /zh/page in url) and load translation with lazy trunk only when reqired
+* Asyn page loading and progress indication with lazy trunk only when reqired
 * More...
 
 
 
 ## Build
 
-Compile and copy required resources to dist
+Compile and copy resources to dist
 
 ```bash
 yarn clean
@@ -19,7 +20,7 @@ yarn build-watch
 
 ## Release
 
-Update required information before publish to repository
+Update information before publish to repository
 
 ```bash
 yarn release

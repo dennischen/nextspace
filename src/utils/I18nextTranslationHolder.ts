@@ -13,7 +13,7 @@ function handleLabel(i18: I18nextInstance, key: string, options: any = {}) {
     if (returnObjects || typeof val === 'string') {
         return val
     }
-    return val['@'] || `[key:${key}`
+    return val['@'] || `[key:${key}]`
 }
 
 export default class I18nextTranslationHolder implements TranslationHolder {
