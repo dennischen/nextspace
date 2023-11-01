@@ -2,6 +2,7 @@
     "name": "nextspace",
     "version": "0.1.0",
     "private": "false",
+    "license": "MIT",
     "scripts": {
         "clean": "rimraf dist/",
         "copy-files": "copyfiles -u 1 src/**/*.svg src/*.scss src/**/*.scss dist/",
