@@ -3,13 +3,13 @@ import lazyWithPreload, { PreloadableComponent } from '@nextspace/components/laz
 
 
 export type TranslationLoaderProps = {
-    locale: string
+    language: string
     children?: React.ReactNode
 }
 
 export type TranslationLoaderComponent<T extends React.ComponentType<any>> = PreloadableComponent<T> & {
 
-    readonly locale: string
+    readonly language: string
 
     readonly _nextspace: {
         /**
@@ -26,7 +26,7 @@ export type TranslationLoaderComponent<T extends React.ComponentType<any>> = Pre
 }
 
 
-export default function translationLoader<T extends React.ComponentType<any>>(locale: string, factory: () => Promise<{ default: T }>) {
+export default function translationLoader<T extends React.ComponentType<any>>(language: string, factory: () => Promise<{ default: T }>) {
     let lazyWrap: TranslationLoaderComponent<T>
     const factoryWrap = () => {
         return factory().then((loadedModule) => {
@@ -43,7 +43,7 @@ export default function translationLoader<T extends React.ComponentType<any>>(lo
         })
     }
     lazyWrap = Object.assign(lazyWithPreload(factoryWrap), {
-        locale,
+        language,
         _nextspace: {
             _status: 0
         }

@@ -8,20 +8,20 @@ import { TranslationHolder } from '@nextspace/types'
 export default class SimpleTranslationHolder implements TranslationHolder {
 
     private translationMap = new Map<string, any>();
-    private _locale: string = "";
+    private _language: string = "";
 
-    register(locale: string, translation: { [key: string]: any }) {
+    register(language: string, translation: any) {
         const { translationMap } = this
-        translationMap.set(locale, translation)
+        translationMap.set(language, translation)
     }
 
-    change(newLocale: string) {
-        this._locale = newLocale
+    change(nextLanguage: string) {
+        this._language = nextLanguage
     }
 
-    label(key: string, args?: { [key: string]: string }) {
-        const { _locale, translationMap } = this
-        const val = translationMap.get(_locale)?.[key]
+    label(key: string, args?: any) {
+        const { _language, translationMap } = this
+        const val = translationMap.get(_language)?.[key]
         return val || key
     }
 }

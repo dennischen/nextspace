@@ -47,15 +47,15 @@ export default class I18nextTranslationHolder implements TranslationHolder {
         this.i18.init(initOpt)
     }
 
-    register(locale: string, translation: { [key: string]: any }) {
-        this.i18.addResourceBundle(locale, 'translation', translation)
+    register(language: string, translation: { [key: string]: any }) {
+        this.i18.addResourceBundle(language, 'translation', translation)
     }
 
-    change(newLocale: string) {
-        this.i18.changeLanguage(newLocale)
+    change(nextLanguage: string) {
+        this.i18.changeLanguage(nextLanguage)
     }
 
-    label(key: string, args?: { [key: string]: string }) {
+    label(key: string, args?: any) {
         return handleLabel(this.i18, key, args)
     }
 }
