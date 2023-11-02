@@ -4,6 +4,14 @@
     "private": "false",
     "license": "MIT",
     "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "build-start": "next build-start",
+        "test-e2e": "start-server-and-test dev http://localhost:3000 \"cypress open --e2e\"",
+        "test-e2e:headless": "start-server-and-test dev http://localhost:3000 \"cypress run --e2e\"",
+        "test-comp": "cypress open --component",
+        "test-comp:headless": "cypress run --component",
         "clean": "rimraf dist/",
         "copy-files": "copyfiles -u 1 src/**/*.svg src/*.scss src/**/*.scss dist/",
         "compile": "tsc -p tsconfig.dist.json",
@@ -27,9 +35,12 @@
         "@types/react": "^18",
         "@types/react-dom": "^18",
         "copyfiles": "^2.4.1",
+        "cypress": "^13.4.0",
         "eslint": "^8",
         "eslint-config-next": "13.5.6",
+        "fs-extra": "^11.1.1",
         "rimraf": "^5.0.5",
+        "start-server-and-test": "^2.0.1",
         "typescript": "^5",
         "yargs": "^17.7.2"
     }

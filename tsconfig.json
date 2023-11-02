@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "es2020",
+        "module": "esnext",
         "target": "es5",
         "noImplicitAny": true,
         "esModuleInterop": true,
@@ -10,7 +10,6 @@
             "esnext"
         ],
         "jsx": "preserve",
-        "outDir": "dist",
         "skipLibCheck": true,
         "allowJs": true,
         "paths": {
@@ -19,6 +18,9 @@
             ],
             "@/*": [
                 "./app/*"
+            ],
+            "@cypress/*": [
+                "./cypress/*"
             ]
         },
         "moduleResolution": "node",
@@ -37,10 +39,8 @@
     },
     "include": [
         "next-env.d.ts",
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "app/**/*.ts",
-        "app/**/*.tsx",
+        "**/*.ts",
+        "**/*.tsx",
         "build/types/**/*.ts"
     ],
     "exclude": [

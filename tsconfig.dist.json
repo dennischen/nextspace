@@ -3,6 +3,8 @@
         "./tsconfig"
     ],
     "compilerOptions": {
+        "module": "es2020",
+        "outDir": "dist",
         "paths": {
             "@nextspace/*": [
                 "./src/*"
@@ -14,5 +16,10 @@
     "include": [
         "src/**/*.ts",
         "src/**/*.tsx",
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.cy.ts",
+        "**/*.cy.tsx",
     ]
 }

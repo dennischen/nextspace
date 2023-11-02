@@ -6,16 +6,16 @@ Nextspace is a workspace context provides abilities for a nextjs application to 
 
 
 
-## Build
+## Distribution
 
 Compile and copy resources to dist
 
 ```bash
 yarn clean
 
-yarn build
+yarn dist
 # or watch for running nextspace in nextjs dev
-yarn build-watch
+yarn dist-watch
 ```
 
 ## Release

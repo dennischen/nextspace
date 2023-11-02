@@ -3,16 +3,14 @@
  * @file-created: 2023-10-23
  * @author: Dennis Chen
  */
-import clsx from "clsx"
-import { Suspense, useContext, useMemo, useState } from "react"
+import { Suspense, useMemo, useState } from "react"
 import Modal from "./components/Modal"
 import { TranslationLoaderComponent, TranslationLoaderProps } from "./components/translationLoader"
 import WorkspaceHolder from "./contexts/workspace"
-import styles from "./nextspace.module.scss"
-import { I18n, Process, Workspace, WorkspaceConfig } from "./types"
-import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
-import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
 import './global.scss'
+import { I18n, Process, Workspace, WorkspaceConfig } from "./types"
+import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
+import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
 import { sequential } from "./utils/process"
 
 let defaultConfig: Required<WorkspaceConfig> = {
@@ -25,8 +23,7 @@ export function setDefaultConfig(config: WorkspaceConfig) {
 }
 
 export type WorkspaceBoundaryProps = {
-    children: React.ReactNode
-    className?: string
+    children?: React.ReactNode
     defaultLanguage?: string
     translations?: TranslationLoaderComponent<React.ComponentType<TranslationLoaderProps>>[]
     config?: WorkspaceConfig
@@ -45,7 +42,7 @@ function assertTranslation(language: string | undefined,
 }
 
 export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
-    const { children, className, defaultLanguage: defaultLanguage = "", translations = [] } = props
+    const { children, defaultLanguage: defaultLanguage = "", translations = [] } = props
     let { config = {} } = props
 
     const mergedConfig = Object.assign({}, defaultConfig, config) as Required<WorkspaceConfig>
@@ -117,15 +114,13 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
     const TransationLoader = assertTranslation(language, translations)
 
-    return <div className={clsx(styles.workspace, className)}>
-        <WorkspaceHolder.Provider value={workspace}>
-            <Suspense fallback={
-                <Modal>
-                    <p>Loading</p>
-                </Modal>}>
-                {TransationLoader ? <TransationLoader language={language}>{children}</TransationLoader> : children}
-            </Suspense>
-        </WorkspaceHolder.Provider>
-    </div>
+    return <WorkspaceHolder.Provider value={workspace}>
+        <Suspense fallback={
+            <Modal>
+                <p>Loading</p>
+            </Modal>}>
+            {TransationLoader ? <TransationLoader language={language}>{children}</TransationLoader> : children}
+        </Suspense>
+    </WorkspaceHolder.Provider>
 }
 
