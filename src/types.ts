@@ -1,4 +1,5 @@
-/// <reference types="next" /> 
+// reference for build dist before run yarn dev(no next-dev.d.ts)
+/// <reference types="next" />
 /// <reference types="next/image-types/global" />
 /*
  * @file-created: 2023-10-23

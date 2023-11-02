@@ -16,21 +16,32 @@
         "paths": {
             "@nextspace/*": [
                 "./src/*"
+            ],
+            "@/*": [
+                "./app/*"
             ]
         },
-        "moduleResolution": "node",        
+        "moduleResolution": "node",
         "resolveJsonModule": true,
         "strict": true,
         "declaration": true,
         "sourceMap": false,
-        
-        // "noEmit": true,
-        // "isolatedModules": true,
-        // "incremental": true,
+        "noEmit": true,
+        "incremental": true,
+        "isolatedModules": true,
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ]
     },
     "include": [
+        "next-env.d.ts",
         "src/**/*.ts",
         "src/**/*.tsx",
+        "app/**/*.ts",
+        "app/**/*.tsx",
+        "build/types/**/*.ts"
     ],
     "exclude": [
         "node_modules"

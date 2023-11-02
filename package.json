@@ -6,10 +6,10 @@
     "scripts": {
         "clean": "rimraf dist/",
         "copy-files": "copyfiles -u 1 src/**/*.svg src/*.scss src/**/*.scss dist/",
-        "compile": "tsc -p tsconfig.json",
-        "compile-watch": "tsc -p tsconfig.json -w",
-        "build": "yarn copy-files && yarn compile",
-        "build-watch": "yarn copy-files && yarn compile-watch",
+        "compile": "tsc -p tsconfig.dist.json",
+        "compile-watch": "tsc -p tsconfig.dist.json -w",
+        "dist": "yarn copy-files && yarn compile",
+        "dist-watch": "yarn copy-files && yarn compile-watch",
         "release": "node build-help.js --release-package-json"
     },
     "dependencies": {
@@ -27,7 +27,6 @@
         "@types/react": "^18",
         "@types/react-dom": "^18",
         "copyfiles": "^2.4.1",
-        "fs-extra": "^11.1.1",
         "eslint": "^8",
         "eslint-config-next": "13.5.6",
         "rimraf": "^5.0.5",

@@ -1,0 +1,18 @@
+{
+    "extends": [
+        "./tsconfig"
+    ],
+    "compilerOptions": {
+        "paths": {
+            "@nextspace/*": [
+                "./src/*"
+            ]
+        },        
+        "noEmit": false,
+        "incremental": false
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+    ]
+}
