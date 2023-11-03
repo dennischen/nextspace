@@ -9,7 +9,6 @@ import spin from '@nextspace/assets/spin.svg'
 
 const INDICATOR_CLASS_NAME = 'nextspace-spi'
 
-
 export default class SimpleProgressIndicator implements ProgressIndicator {
 
     private container?: HTMLElement

@@ -6,7 +6,6 @@
 import { TranslationHolder } from '@nextspace/types'
 import type { InitOptions, i18n as I18nextInstance } from 'i18next'
 
-
 function handleLabel(i18: I18nextInstance, key: string, options: any = {}) {
     const { returnObjects, ...other } = options
     const val = i18.t(key, { returnObjects: true, ...other }) as any

@@ -1,6 +1,9 @@
+/*
+ * @file-created: 2023-10-23
+ * @author: Dennis Chen
+ */
+
 import lazyWithPreload, { PreloadableComponent } from '@nextspace/components/lazyWithPreload'
-
-
 
 export type TranslationLoaderProps = {
     language: string
