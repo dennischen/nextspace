@@ -8,6 +8,8 @@ import styles from "@nextspace/nextspace.module.scss"
 import clsx from "clsx"
 import { createPortal } from "react-dom"
 
+const MODAL_CLASS_NAME = 'nextspace-modal'
+
 export type ModalProps = {
     children?: React.ReactNode
     container?: HTMLElement
@@ -15,7 +17,7 @@ export type ModalProps = {
 }
 
 export default function Modal({ container, children }: ModalProps) {
-    const content = <div className={clsx(styles.modal)}>{children}</div>
+    const content = <div className={clsx(MODAL_CLASS_NAME, styles.modal)}>{children}</div>
     if (!container && typeof document === 'undefined') {
         return content
     }

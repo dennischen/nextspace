@@ -1,9 +1,10 @@
-import { Process } from "@nextspace/types"
-
 /*
  * @file-created: 2023-10-30
  * @author: Dennis Chen
  */
+
+import { Process } from "@nextspace/types"
+
 export function sequential<T = any>(...processes: Process<T>[]): Promise<T> {
     return cancelableSequential(undefined, ...processes)
 }

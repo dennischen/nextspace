@@ -1,0 +1,22 @@
+.main {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 96px;
+}
+
+.hlayout {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.vlayout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

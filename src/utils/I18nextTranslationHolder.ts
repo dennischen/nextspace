@@ -6,7 +6,6 @@
 import { TranslationHolder } from '@nextspace/types'
 import type { InitOptions, i18n as I18nextInstance } from 'i18next'
 
-
 function handleLabel(i18: I18nextInstance, key: string, options: any = {}) {
     const { returnObjects, ...other } = options
     const val = i18.t(key, { returnObjects: true, ...other }) as any
@@ -47,15 +46,15 @@ export default class I18nextTranslationHolder implements TranslationHolder {
         this.i18.init(initOpt)
     }
 
-    register(locale: string, translation: { [key: string]: any }) {
-        this.i18.addResourceBundle(locale, 'translation', translation)
+    register(language: string, translation: { [key: string]: any }) {
+        this.i18.addResourceBundle(language, 'translation', translation)
     }
 
-    change(newLocale: string) {
-        this.i18.changeLanguage(newLocale)
+    change(nextLanguage: string) {
+        this.i18.changeLanguage(nextLanguage)
     }
 
-    label(key: string, args?: { [key: string]: string }) {
+    label(key: string, args?: any) {
         return handleLabel(this.i18, key, args)
     }
 }
