@@ -7,7 +7,9 @@ import I18nInfo from '@/components/I18nInfo'
 import LanguageSwitcher from '@/language-switcher/LanguageSwitcher'
 import LazyPreloader from '@/lazy-preloader/LazyPreloader'
 import SequentialProcessor from '@/sequential-processor/SequentialProcessor'
+import ThemeSwitcher from '@/theme-switcher/ThemeSwitcher'
 import WorkspaceBoundary from './WorkspaceBoundary'
+import themepackLoader from './components/themepackLoader'
 import translationLoader from './components/translationLoader'
 /* eslint-disable */
 // Disable ESLint to prevent failing linting inside the Next.js repo.
@@ -17,11 +19,14 @@ import translationLoader from './components/translationLoader'
 
 
 //short wait for async ui operation
-const shortWait = 100;
+const shortWait = 100
 
 const EnTranslationLoader = translationLoader("en", () => import('@/i18n/EnTranslationLoader'))
 const ZhTranslationLoader = translationLoader("zh", () => import('@/i18n/ZhTranslationLoader'))
 
+
+const LightThemepackLoader = themepackLoader("light", () => import("@/themes/LightThemepackLoader"))
+const DarkThemepackLoader = themepackLoader("dark", () => import("@/themes/DarkThemepackLoader"))
 
 function fixProgressIndicator(cy: Cypress.cy & CyEventEmitter) {
     //https://www.cypress.io/blog/2023/02/16/component-testing-next-js-with-cypress
@@ -244,6 +249,59 @@ describe('<WorkspaceBoundary />', () => {
         cy.get(".panel2").should('exist').contains('Panel2')
         cy.get(".nextspace-modal").should('not.exist')
     })
+
+    it('should render & siwtch theme correctly', () => {
+        cy.mount(<WorkspaceBoundary defaultTheme='light' themepacks={[LightThemepackLoader, DarkThemepackLoader]}>
+            <ThemeSwitcher id="test1" />
+        </WorkspaceBoundary>)
+        cy.get("#test1").within(() => {
+            let node = cy.get('option').should('have.length', 2).first()
+            node.should('have.value', 'light').contains('light').should('have.attr', 'selected')
+            node = cy.get('option').eq(1)
+            node.should('have.value', 'dark').contains('dark').should('not.have.attr', 'selected')
+
+        })
+
+        cy.get('#p1').contains('light')
+        cy.get('#p2').contains('False')
+        cy.get('#p3').contains('/_next/static/media/light.')
+        cy.get('#p4').should('have.css', 'background-color', 'rgb(0, 0, 0)')
+        cy.get('#p4').should('have.css', 'color', 'rgb(255, 255, 255)')
+        cy.get('#p5').contains('333px')
+
+
+        cy.get('select').select('dark')
+        cy.wait(shortWait)
+
+
+        cy.get("#test1").within(() => {
+            let node = cy.get('option').should('have.length', 2).first()
+            //i18n is not implement in this component test
+            node.should('have.value', 'light').contains('light').should('not.have.attr', 'selected')
+            node = cy.get('option').eq(1)
+            node.should('have.value', 'dark').contains('dark').should('have.attr', 'selected')
+        })
+
+        cy.get('#p1').contains('dark')
+        cy.get('#p2').contains('True')
+        cy.get('#p3').contains('/_next/static/media/dark.')
+        cy.get('#p4').should('have.css', 'background-color', 'rgb(255, 255, 255)')
+        cy.get('#p4').should('have.css', 'color', 'rgb(0, 0, 0)')
+        cy.get('#p5').contains('334px')
+
+
+        cy.get('select').select('light')
+        cy.wait(shortWait)
+
+
+        cy.get("#test1").within(() => {
+            let node = cy.get('option').should('have.length', 2).first()
+            node.should('have.value', 'light').contains('light').should('have.attr', 'selected')
+            node = cy.get('option').eq(1)
+            node.should('have.value', 'dark').contains('dark').should('not.have.attr', 'selected')
+        })
+
+    },)
 })
 
 // Prevent TypeScript from reading file as legacy script

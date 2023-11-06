@@ -5,10 +5,14 @@
  */
 
 import WorkspaceBoundary from '@nextspace/WorkspaceBoundary'
+import themepackLoader from '@nextspace/components/themepackLoader'
 import translationLoader from '@nextspace/components/translationLoader'
 
 const EnTranslationLoader = translationLoader("en", () => import('@/i18n/EnTranslationLoader'))
 const ZhTranslationLoader = translationLoader("zh", () => import('@/i18n/ZhTranslationLoader'))
+
+const LightThemepackLoader = themepackLoader("light", () => import("@/themes/LightThemepackLoader"))
+const DarkThemepackLoader = themepackLoader("dark", () => import("@/themes/DarkThemepackLoader"))
 
 export default function WrokspaceLayout({
     children,
@@ -16,7 +20,8 @@ export default function WrokspaceLayout({
     children: React.ReactNode
 }) {
     return (
-        <WorkspaceBoundary defaultLanguage='en' translations={[EnTranslationLoader, ZhTranslationLoader]}>
+        <WorkspaceBoundary defaultLanguage='en' translations={[EnTranslationLoader, ZhTranslationLoader]}
+            defaultTheme='light' themepacks={[LightThemepackLoader, DarkThemepackLoader]}>
             {children}
         </WorkspaceBoundary>
     )

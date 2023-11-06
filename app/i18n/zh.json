@@ -1,5 +1,7 @@
 {
     "nextspace" : "Nextspace",
     "en": "英文",
-    "zh": "中文"
+    "zh": "中文",
+    "light": "亮",
+    "dark": "暗"
 }
