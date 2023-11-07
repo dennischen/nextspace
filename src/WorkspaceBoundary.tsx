@@ -4,8 +4,7 @@
  * @author: Dennis Chen
  */
 
-import { Suspense, useMemo, useState } from "react"
-import Modal from "./components/Modal"
+import { useMemo, useState } from "react"
 import { ThemepackLoaderComponent, ThemepackLoaderProps } from "./components/themepackLoader"
 import { TranslationLoaderComponent, TranslationLoaderProps } from "./components/translationLoader"
 import WorkspaceHolder from "./contexts/workspace"
@@ -194,17 +193,11 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     }
 
     const loaderBoundary = (children: React.ReactNode) => {
-        //three node inner -> outer
-        return themepackBoundary(translationBoundary(children))
+        return translationBoundary(themepackBoundary(children))
     }
 
     return <WorkspaceHolder.Provider value={workspace}>
-        <Suspense fallback={
-            <Modal>
-                <p>Loading...</p>
-            </Modal>}>
-            {loaderBoundary(children)}
-        </Suspense>
+        {loaderBoundary(children)}
     </WorkspaceHolder.Provider>
 }
 

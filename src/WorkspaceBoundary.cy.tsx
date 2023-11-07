@@ -184,14 +184,13 @@ describe('<WorkspaceBoundary />', () => {
         //test lazy
         cy.get(".btn1").click()
         cy.wait(shortWait)
-        //lazy show a loading in workspace boundary
-        //Suspense fallback use style{display:none} to hide contain, the dom is still here
-        cy.get("#test1").should('not.be.visible')
-        cy.get(".btn1").should('not.be.visible')
-        cy.get(".btn2").should('not.be.visible')
+        cy.get("#test1").should('be.visible')
+        cy.get(".btn1").should('be.visible')
+        cy.get(".btn2").should('be.visible')
 
+        //a modal loading... in test
         cy.get(".nextspace-modal").should('be.visible')
-        cy.get(".nextspace-modal p").contains('Loading')
+        cy.get(".nextspace-modal p").contains('Loading...')
 
 
         //delay in LazyPreloader is 2000
