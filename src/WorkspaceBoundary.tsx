@@ -165,6 +165,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
             //theme
             themes,
+            theme,
             changeTheme,
             registerThemepack: (theme, themepack) => {
                 themepackHolder.register(theme, themepack)

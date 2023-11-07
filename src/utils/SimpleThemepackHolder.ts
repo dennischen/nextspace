@@ -5,13 +5,6 @@
 
 import { Themepack } from "@nextspace/types"
 
-const blank: Themepack = {
-    theme: '',
-    styles: {},
-    variables: {},
-    images: {}
-}
-
 export default class SimpleThemepackHolder {
 
     private themepackMap = new Map<string, Themepack>();
@@ -29,7 +22,7 @@ export default class SimpleThemepackHolder {
     get(): Themepack {
         const { theme, themepackMap } = this
         const val = themepackMap.get(theme)
-        return val || blank
+        return val || {}
     }
 }
 

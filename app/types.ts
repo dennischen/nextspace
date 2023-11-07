@@ -14,10 +14,13 @@ export type MyThemeStyles = {
     className1: string
 }
 
-export type MyPayload = {
+export type MyUtils = {
     toPx(n: number): string
 }
 
-export interface MyThemepack extends Themepack<MyThemeVariables, MyThemeStyles, MyThemeImages> {
-    payload: MyPayload
-}
+export type MyThemepack = {
+    readonly utils: MyUtils
+    readonly variables: MyThemeVariables
+    readonly styles: MyThemeStyles
+    readonly images: MyThemeImages
+} & Themepack

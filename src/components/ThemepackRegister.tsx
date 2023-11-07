@@ -14,7 +14,7 @@ export type TranslationRegisterProps = {
     children?: React.ReactNode
 }
 
-export default function TranslationRegister({ theme, themepack, children }: TranslationRegisterProps) {
+export default function ThemepackRegister({ theme, themepack, children }: TranslationRegisterProps) {
     const workspace = useContext(WorkspaceHolder)
 
     if (theme && themepack) {

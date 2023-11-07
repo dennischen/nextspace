@@ -5,6 +5,7 @@
     "license": "MIT",
     "scripts": {
         "dev": "next dev",
+        "lint": "next lint",
         
         "test:component:open": "cypress open --component",
         "test:component": "cypress run --component",

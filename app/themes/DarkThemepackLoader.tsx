@@ -9,10 +9,9 @@ import { ThemepackLoaderProps } from "@nextspace/components/themepackLoader"
 import { MyThemepack } from "@/types"
 import darkStyles from './dark.module.scss'
 import darkImage from './dark.png'
-import { payload } from "./payload"
+import { utils } from "./utils"
 
 const themepack: MyThemepack = {
-    theme: "dark",
     dark: true,
     styles: {
         className1: darkStyles.outer,
@@ -27,7 +26,7 @@ const themepack: MyThemepack = {
     images: {
         image1: darkImage.src
     },
-    payload: payload
+    utils
 }
 export default function ThemepackLoader({ theme, children }: ThemepackLoaderProps) {
     return <ThemepackRegister theme={theme} themepack={themepack} >{children}</ThemepackRegister>

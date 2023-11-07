@@ -11,6 +11,7 @@ export type Workspace = {
     readonly i18n: I18n
     readonly progressIndicator: ProgressIndicator
     readonly themes: string[]
+    readonly theme: string
     readonly themepack: Themepack
     changeLanguage(nextLanguage: string): void
     registerTranslation(language: string, translation: any): void
@@ -52,11 +53,7 @@ export type ProgressIndicator = {
     readonly loading: boolean
 }
 
-//I need extends themepack but type doesn't suuport, so have to use interfce
-export interface Themepack<V = any, S = any, I = any>{
-    readonly theme: string
+export type Themepack = {
+    //dark flag is required for some buildin component (e.g. Modal)
     readonly dark?: boolean
-    readonly variables: V
-    readonly styles: S
-    readonly images: I
 }
