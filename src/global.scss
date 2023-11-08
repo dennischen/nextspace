@@ -27,7 +27,7 @@ $base-z-index: 1000;
 :root {
     --nextspace-base-z-index: #{$base-z-index};
     --nextspace-modal-z-index: #{$base-z-index + 1};
-    --nextspace-modal-background: #e0e0e020;
+    --nextspace-modal-background: #e0e0e070;
     --nextspace-spin-z-index: #{$base-z-index + 2};
     --nextspace-spi-background: #e0e0e020;
     --nextspace-font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
