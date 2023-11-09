@@ -6,31 +6,31 @@
 import { Process } from "@nextspace/types"
 
 export type SequentialPromise<T = any> = Promise<T> & {
-    cancel: () => void
-    canceled(): boolean
+    abort: () => void
+    aborted(): boolean
     completed(): boolean
 }
 
 export function sequential<P = any, T = any>(...processes: Process<P, T>[]): SequentialPromise<T> {
     const state = {
-        canceled: false,
+        aborted: false,
         completed: false
     }
-    const cancel = () => {
-        state.canceled = true
+    const abort = () => {
+        state.aborted = true
     }
     
     const completed = () => state.completed
-    const canceled = () => state.canceled
+    const aborted = () => state.aborted
 
     return Object.assign(_sequential(state, undefined as any, ...processes), {
-        cancel,
-        canceled,
+        abort,
+        aborted,
         completed
     })
 
 }
-function _sequential<P = any, T = any>(state: { canceled: boolean, completed: boolean }, prev: P, ...processes: Process<P, T>[]): Promise<T> {
+function _sequential<P = any, T = any>(state: { aborted: boolean, completed: boolean }, prev: P, ...processes: Process<P, T>[]): Promise<T> {
     return new Promise<T>((resolve, reject) => {
         try {
             if (!processes || processes.length === 0) {
@@ -45,7 +45,7 @@ function _sequential<P = any, T = any>(state: { canceled: boolean, completed: bo
                 if (!rest || rest.length === 0) {
                     state.completed = true;
                     resolve(val)
-                } else if (state.canceled) {
+                } else if (state.aborted) {
                     resolve(undefined as any)
                 } else {
                     return _sequential(state, val as any, ...rest).then((nval) => {
