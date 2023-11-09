@@ -5,39 +5,56 @@
 
 import { Process } from "@nextspace/types"
 
-export function sequential<T = any>(...processes: Process<T>[]): Promise<T> {
-    return cancelableSequential(undefined, ...processes)
+export type SequentialPromise<T = any> = Promise<T> & {
+    cancel: () => void
+    canceled(): boolean
+    completed(): boolean
 }
 
-export function cancelableSequential<T = any>(
-    cancel?: () => boolean,
-    ...processes: Process<T>[]
-): Promise<T> {
+export function sequential<P = any, T = any>(...processes: Process<P, T>[]): SequentialPromise<T> {
+    const state = {
+        canceled: false,
+        completed: false
+    }
+    const cancel = () => {
+        state.canceled = true
+    }
+    
+    const completed = () => state.completed
+    const canceled = () => state.canceled
+
+    return Object.assign(_sequential(state, undefined as any, ...processes), {
+        cancel,
+        canceled,
+        completed
+    })
+
+}
+function _sequential<P = any, T = any>(state: { canceled: boolean, completed: boolean }, prev: P, ...processes: Process<P, T>[]): Promise<T> {
     return new Promise<T>((resolve, reject) => {
         try {
-            if (!processes || processes.length === 0 || (cancel && cancel())) {
-                //resolve nothing when canceling
+            if (!processes || processes.length === 0) {
+                state.completed = true;
                 resolve(undefined as any)
             }
-            const [nextproc, ...rest] = processes
-            if(typeof nextproc !== 'function'){
-                throw `process is not a function, is ${typeof nextproc}`
+            const [nextProc, ...rest] = processes
+            if (typeof nextProc !== 'function') {
+                throw `process is not a function, is ${typeof nextProc}`
             }
-            const promise = nextproc()
-
-            promise
-                .then((v) => {
-                    if (!rest || rest.length === 0 || (cancel && cancel())) {
-                        resolve(v)
-                    } else {
-                        return cancelableSequential(cancel, ...rest).then((v) => {
-                            resolve(v)
-                        })
-                    }
-                })
-                .catch((err) => {
-                    reject(err)
-                })
+            nextProc(prev).then((val) => {
+                if (!rest || rest.length === 0) {
+                    state.completed = true;
+                    resolve(val)
+                } else if (state.canceled) {
+                    resolve(undefined as any)
+                } else {
+                    return _sequential(state, val as any, ...rest).then((nval) => {
+                        resolve(nval)
+                    })
+                }
+            }).catch((err) => {
+                reject(err)
+            })
         } catch (err) {
             reject(err)
         }
@@ -48,7 +65,7 @@ export function all<T = any>(...processes: Process<T>[]): Promise<T[]> {
     const r: Promise<T>[] = []
     processes.forEach((p) => {
         //invoke to process parallely
-        r.push(p())
+        r.push(p(undefined as any))
     })
     return Promise.all<T>(r)
 }
