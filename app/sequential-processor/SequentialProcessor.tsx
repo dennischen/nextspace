@@ -35,7 +35,7 @@ export default function SequentialProcessor({ id = 'test1' , procNumber = 2, max
             }
         ]
 
-        workspace.withProcessIndicator(...processes)
+        workspace.withProcessIndicator(processes)
 
     }, [workspace, procNumber, maxTimeout])
 

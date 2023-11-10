@@ -3,39 +3,43 @@
  * @author: Dennis Chen
  */
 
-import { Process } from "@nextspace/types"
+import { AbortablePromise, Process } from "@nextspace/types"
 
-export type SequentialPromise<T = any> = Promise<T> & {
-    abort: () => void
-    aborted(): boolean
-    completed(): boolean
+export type SequentialOption = {
+    step?: (step: number) => void
 }
 
-export function sequential<P = any, T = any>(...processes: Process<P, T>[]): SequentialPromise<T> {
-    const state = {
-        aborted: false,
-        completed: false
+type SequenticalState = {
+    aborted?: boolean
+    completed?: boolean
+    step: number
+}
+
+export function sequential<P = any, T = any>(processes: Process<P, T>[], initValue?: P, option?: SequentialOption): AbortablePromise<T> {
+    const state: SequenticalState = {
+        step: 0
     }
     const abort = () => {
         state.aborted = true
     }
-    
-    const completed = () => state.completed
-    const aborted = () => state.aborted
+    const completed = () => !!state.completed
+    const aborted = () => !!state.aborted
+    const step = () => state.step
 
-    return Object.assign(_sequential(state, undefined as any, ...processes), {
+    return Object.assign(_sequential(state, processes, initValue as P, option), {
         abort,
         aborted,
-        completed
+        completed,
+        step
     })
 
 }
-function _sequential<P = any, T = any>(state: { aborted: boolean, completed: boolean }, prev: P, ...processes: Process<P, T>[]): Promise<T> {
+function _sequential<P = any, T = any>(state: SequenticalState, processes: Process<P, T>[], prev: P, option?: SequentialOption): Promise<T> {
     return new Promise<T>((resolve, reject) => {
         try {
             if (!processes || processes.length === 0) {
-                state.completed = true;
-                resolve(undefined as any)
+                state.completed = true
+                resolve(undefined as any as T)
             }
             const [nextProc, ...rest] = processes
             if (typeof nextProc !== 'function') {
@@ -43,13 +47,15 @@ function _sequential<P = any, T = any>(state: { aborted: boolean, completed: boo
             }
             nextProc(prev).then((val) => {
                 if (!rest || rest.length === 0) {
-                    state.completed = true;
+                    state.completed = true
                     resolve(val)
                 } else if (state.aborted) {
-                    resolve(undefined as any)
+                    resolve(val)
                 } else {
-                    return _sequential(state, val as any, ...rest).then((nval) => {
-                        resolve(nval)
+                    state.step += 1
+                    option?.step?.(state.step)
+                    return _sequential(state, rest, val as any as P, option).then((nextVal) => {
+                        resolve(nextVal)
                     })
                 }
             }).catch((err) => {
@@ -65,7 +71,7 @@ export function all<T = any>(...processes: Process<T>[]): Promise<T[]> {
     const r: Promise<T>[] = []
     processes.forEach((p) => {
         //invoke to process parallely
-        r.push(p(undefined as any))
+        r.push(p(undefined as any as T))
     })
     return Promise.all<T>(r)
 }

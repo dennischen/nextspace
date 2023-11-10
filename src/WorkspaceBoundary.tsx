@@ -147,13 +147,15 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
         }
 
         //process
-        const withProcessIndicator = (...processes: Process[]) => {
+        const withProcessIndicator = <P, T>(processes: Process<P, T> | Process<P, T>[], initValue?: P) => {
             progressIndicator.start()
-            const p = sequential(...processes);
-            p.finally(() => {
+            const o = sequential(Array.isArray(processes) ? processes : [processes], initValue)
+            //catch/eat this handle path to end indicator
+            o.catch(() => { }).finally(() => {
                 progressIndicator.end()
             })
-            return p;
+            //return original so call can catch it
+            return o
         }
         const workspace: Workspace = {
             //i18n

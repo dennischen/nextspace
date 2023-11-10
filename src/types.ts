@@ -2,8 +2,6 @@
 /// <reference types="next" />
 /// <reference types="next/image-types/global" />
 
-import { SequentialPromise } from "./utils/process"
-
 /*
  * @file-created: 2023-10-23
  * @author: Dennis Chen
@@ -20,7 +18,7 @@ export type Workspace = {
     registerTranslation(language: string, translation: any): void
     changeTheme(nextTheme: string): void
     registerThemepack(theme: string, themepack: Themepack): void
-    withProcessIndicator<T = any>(...processes: Process<T>[]): SequentialPromise<T>
+    withProcessIndicator<P= any, T = any>(processes: Process<P, T> | Process<P, T>[], initValue?: P): AbortablePromise<T>
 }
 
 export type WorkspaceConfig = {
@@ -54,6 +52,13 @@ export type ProgressIndicator = {
     start: () => void
     end: (force?: boolean) => void
     readonly loading: boolean
+}
+
+export type AbortablePromise<T = any> = Promise<T> & {
+    abort: () => void
+    aborted(): boolean
+    completed(): boolean
+    step(): number
 }
 
 export type Themepack = {
