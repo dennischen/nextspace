@@ -4,7 +4,7 @@
  * @author: Dennis Chen
  */
 
-import { useMemo, useState } from "react"
+import { CSSProperties, useContext, useMemo, useState } from "react"
 import { ThemepackLoaderComponent, ThemepackLoaderProps } from "./components/themepackLoader"
 import { TranslationLoaderComponent, TranslationLoaderProps } from "./components/translationLoader"
 import WorkspaceHolder from "./contexts/workspace"
@@ -14,6 +14,8 @@ import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
 import SimpleThemepackHolder from "./utils/SimpleThemepackHolder"
 import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
 import { sequential } from "./utils/process"
+import nextspaceStyles from "./nextspace.module.scss"
+import clsx from "clsx"
 
 let defaultConfig: Required<WorkspaceConfig> = {
     translationHolder: new SimpleTranslationHolder(),
@@ -32,6 +34,7 @@ export type WorkspaceBoundaryProps = {
     translations?: TranslationLoaderComponent<React.ComponentType<TranslationLoaderProps>>[]
     themepacks?: ThemepackLoaderComponent<React.ComponentType<ThemepackLoaderProps>>[]
     config?: WorkspaceConfig
+    className?: string
 }
 
 
@@ -58,7 +61,7 @@ function assertThemepack(theme: string | undefined,
 }
 
 export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
-    const { children, defaultLanguage = "", translations = [], defaultTheme = "", themepacks = [] } = props
+    const { children, className, defaultLanguage = "", translations = [], defaultTheme = "", themepacks = [] } = props
     let { config = {} } = props
 
     const mergedConfig = Object.assign({}, defaultConfig, config) as Required<WorkspaceConfig>
@@ -200,8 +203,17 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
         return translationBoundary(themepackBoundary(children))
     }
 
+    const style: CSSProperties | undefined = ThemepackLoader ? { colorScheme: themepackHolder.get()?.dark ? 'dark' : 'light' } : undefined
+
     return <WorkspaceHolder.Provider value={workspace}>
-        {loaderBoundary(children)}
+        {loaderBoundary(<Workspace className={className}>{children}</Workspace>)}
     </WorkspaceHolder.Provider>
+}
+
+// a internal component to apply colorScheme in WorkspaceContext
+function Workspace({ className, children }: { className?: string, children: React.ReactNode }) {
+    const workspace = useContext(WorkspaceHolder)
+    const colorScheme = workspace.themepack?.colorScheme
+    return <div data-nextspace-root="" className={clsx(nextspaceStyles.workspace, className)} style={colorScheme ? { colorScheme } : undefined}>{children}</div>
 }
 

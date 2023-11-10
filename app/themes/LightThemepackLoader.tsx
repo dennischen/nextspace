@@ -12,6 +12,8 @@ import lightImage from './light.png'
 import { utils } from "./utils"
 
 const themepack: MyThemepack = {
+    dark: false,
+    colorScheme: 'light',
     styles: {
         className1: lightStyles.outer,
         innerStyle1: {

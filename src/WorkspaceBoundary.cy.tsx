@@ -44,17 +44,20 @@ function fixProgressIndicator(cy: Cypress.cy & CyEventEmitter) {
 // Cypress Component Test
 describe('<WorkspaceBoundary />', () => {
 
-    it('should render nothing', () => {
+    it('should render workspace', () => {
         cy.mount(<WorkspaceBoundary />)
 
-        cy.get('[data-cy-root]').children().should('not.exist')
+        cy.get('[data-cy-root]').children().should('exist')
+            .first().should('have.attr', 'data-nextspace-root')
+        cy.get('[data-cy-root]').children().should('exist')
+            .first().children().should('not.exist')
     },)
-    it('should render children whitout any internal html element', () => {
+    it('should render children under workspace element', () => {
         cy.mount(<WorkspaceBoundary >
             <div id="test1">My Children</div>
         </WorkspaceBoundary>)
 
-        cy.get('[data-cy-root]')
+        cy.get('[data-nextspace-root]')
             .children().should('have.length', 1)
             .first().should('have.id', "test1").contains("My Children")
 
