@@ -13,6 +13,7 @@ import { utils } from "./utils"
 
 const themepack: MyThemepack = {
     dark: true,
+    colorScheme: 'dark',
     styles: {
         className1: darkStyles.outer,
         innerStyle1: {

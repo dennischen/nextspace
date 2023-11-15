@@ -8,6 +8,8 @@ import WorkspaceBoundary from '@nextspace/WorkspaceBoundary'
 import themepackLoader from '@nextspace/components/themepackLoader'
 import translationLoader from '@nextspace/components/translationLoader'
 
+import appStyles from "./app.module.scss"
+
 const EnTranslationLoader = translationLoader("en", () => import('@/i18n/EnTranslationLoader'))
 const ZhTranslationLoader = translationLoader("zh", () => import('@/i18n/ZhTranslationLoader'))
 
@@ -21,7 +23,7 @@ export default function WrokspaceLayout({
 }) {
     return (
         <WorkspaceBoundary defaultLanguage='en' translations={[EnTranslationLoader, ZhTranslationLoader]}
-            defaultTheme='light' themepacks={[LightThemepackLoader, DarkThemepackLoader]}>
+            defaultTheme='light' themepacks={[LightThemepackLoader, DarkThemepackLoader]} className={appStyles.app}>
             {children}
         </WorkspaceBoundary>
     )

@@ -18,7 +18,7 @@ export type Workspace = {
     registerTranslation(language: string, translation: any): void
     changeTheme(nextTheme: string): void
     registerThemepack(theme: string, themepack: Themepack): void
-    withProcessIndicator<P= any, T = any>(processes: Process<P, T> | Process<P, T>[], initValue?: P): AbortablePromise<T>
+    withProcessIndicator<P = any, T = any>(processes: Process<P, T> | Process<P, T>[], initValue?: P): AbortablePromise<T>
 }
 
 export type WorkspaceConfig = {
@@ -64,4 +64,5 @@ export type AbortablePromise<T = any> = Promise<T> & {
 export type Themepack = {
     //dark flag is required for some buildin component (e.g. Modal)
     readonly dark?: boolean
+    readonly colorScheme?: string
 }
