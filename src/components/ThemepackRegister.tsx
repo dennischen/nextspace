@@ -4,9 +4,8 @@
  * @author: Dennis Chen
  */
 
-import WorkspaceHolder from "@nextspace/contexts/workspace"
 import { Themepack } from "@nextspace/types"
-import { useContext } from "react"
+import useWorkspace from "@nextspace/useWorkspace"
 
 export type TranslationRegisterProps = {
     theme: string
@@ -15,7 +14,7 @@ export type TranslationRegisterProps = {
 }
 
 export default function ThemepackRegister({ theme, themepack, children }: TranslationRegisterProps) {
-    const workspace = useContext(WorkspaceHolder)
+    const workspace = useWorkspace();
 
     if (theme && themepack) {
         workspace.registerThemepack(theme, themepack)

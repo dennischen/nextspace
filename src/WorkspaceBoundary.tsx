@@ -4,18 +4,19 @@
  * @author: Dennis Chen
  */
 
+import clsx from "clsx"
 import { CSSProperties, useContext, useMemo, useState } from "react"
 import { ThemepackLoaderComponent, ThemepackLoaderProps } from "./components/themepackLoader"
 import { TranslationLoaderComponent, TranslationLoaderProps } from "./components/translationLoader"
 import WorkspaceHolder from "./contexts/workspace"
 import './global.scss'
+import nextspaceStyles from "./nextspace.module.scss"
 import { I18n, Process, Themepack, Workspace, WorkspaceConfig } from "./types"
 import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
 import SimpleThemepackHolder from "./utils/SimpleThemepackHolder"
 import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
 import { sequential } from "./utils/process"
-import nextspaceStyles from "./nextspace.module.scss"
-import clsx from "clsx"
+import useWorkspace from "./useWorkspace"
 
 let defaultConfig: Required<WorkspaceConfig> = {
     translationHolder: new SimpleTranslationHolder(),
@@ -212,7 +213,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
 // a internal component to apply colorScheme in WorkspaceContext
 function Workspace({ className, children }: { className?: string, children: React.ReactNode }) {
-    const workspace = useContext(WorkspaceHolder)
+    const workspace = useWorkspace();
     const colorScheme = workspace.themepack?.colorScheme
     return <div data-nextspace-root="" className={clsx(nextspaceStyles.workspace, className)} style={colorScheme ? { colorScheme } : undefined}>{children}</div>
 }

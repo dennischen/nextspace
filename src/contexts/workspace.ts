@@ -8,7 +8,7 @@ import { createContext } from "react";
 
 const checker = new Proxy({} as any as Workspace, {
     get() {
-        throw 'workspace not found, you should use Workspaceboundary to wrap your layout or page'
+        throw 'workspace not found, you should use WorkspaceBoundary wrap the layout or page'
     }
 })
 

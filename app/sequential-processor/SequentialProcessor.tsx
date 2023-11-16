@@ -4,12 +4,12 @@
  * @author: Dennis Chen
  */
 
-import WorkspaceHolder from "@nextspace/contexts/workspace"
 import { Process } from "@nextspace/types"
-import { MouseEvent, useCallback, useContext, useState } from "react"
+import useWorkspace from "@nextspace/useWorkspace"
+import { MouseEvent, useCallback, useState } from "react"
 
 export default function SequentialProcessor({ id = 'test1' , procNumber = 2, maxTimeout = 3000 }: { id?: string, procNumber?: number, maxTimeout?: number }) {
-    const workspace = useContext(WorkspaceHolder)
+    const workspace = useWorkspace();
 
     const [running, setRunning] = useState(false)
 

@@ -4,8 +4,7 @@
  * @author: Dennis Chen
  */
 
-import WorkspaceHolder from "@nextspace/contexts/workspace"
-import { useContext } from "react"
+import useWorkspace from "@nextspace/useWorkspace"
 
 export type TranslationRegisterProps = {
     language: string
@@ -14,7 +13,7 @@ export type TranslationRegisterProps = {
 }
 
 export default function TranslationRegister({ language, translation, children }: TranslationRegisterProps) {
-    const workspace = useContext(WorkspaceHolder)
+    const workspace = useWorkspace();
 
     if (language && translation) {
         workspace.registerTranslation(language, translation)

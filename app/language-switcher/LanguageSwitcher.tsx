@@ -1,14 +1,14 @@
 'use client'
+import useI18n from "@nextspace/useI18n"
 /*
  * @file-created: 2023-11-03
  * @author: Dennis Chen
  */
-import { useContext } from "react"
-import WorkspaceHolder from "@nextspace/contexts/workspace"
+import useWorkspace from "@nextspace/useWorkspace"
 
-export default function LanguageSwitcher({ id = 'test1' }: { id?: string}) {
-    const workspace = useContext(WorkspaceHolder)
-    const { i18n } = workspace
+export default function LanguageSwitcher({ id = 'test1' }: { id?: string }) {
+    const workspace = useWorkspace()
+    const i18n = useI18n()
 
     const onChangeLanguage = (evt: React.ChangeEvent<HTMLSelectElement>) => {
         workspace.changeLanguage(evt.target.value)

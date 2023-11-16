@@ -1,17 +1,20 @@
 'use client'
-import { MyThemepack } from "@/types"
 /*
  * @file-created: 2023-11-06
  * @author: Dennis Chen
  */
-import WorkspaceHolder from "@nextspace/contexts/workspace"
+import { MyThemepack } from "@/types"
+import useI18n from "@nextspace/useI18n"
+import useThemepack from "@nextspace/useThemepack"
+import useWorkspace from "@nextspace/useWorkspace"
 import Image from "next/image"
-import { useContext } from "react"
 
 export default function ThemeSwitcher({ id = 'test1' }: { id?: string }) {
-    const workspace = useContext(WorkspaceHolder)
-    const { themes, theme, i18n } = workspace
-    const { styles, dark, images, utils, variables } = workspace.themepack as MyThemepack
+    const workspace = useWorkspace()
+    const i18n = useI18n()
+    const { styles, dark, images, utils, variables } = useThemepack() as MyThemepack
+    const { themes, theme } = workspace
+
 
     const onChangeTheme = (evt: React.ChangeEvent<HTMLSelectElement>) => {
         workspace.changeTheme(evt.target.value)

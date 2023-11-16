@@ -6,15 +6,15 @@ import Modal from "@nextspace/components/Modal"
  */
 
 import lazyWithPreload from "@nextspace/components/lazyWithPreload"
-import WorkspaceHolder from "@nextspace/contexts/workspace"
-import { Suspense, lazy, useContext, useState } from "react"
+import useWorkspace from "@nextspace/useWorkspace"
+import { Suspense, lazy, useState } from "react"
 
 //delay 2s for testing
 const Panel1 = lazy(() => import('@/components/Panel1').then((m) => new Promise<any>(resolve => setTimeout(() => resolve(m), 2000))))
 const Panel2 = lazyWithPreload(() => import('@/components/Panel2').then((m) => new Promise<any>(resolve => setTimeout(() => resolve(m), 2000))))
 
 export default function LazyPreloader({ id = 'test1' }: { id?: string }) {
-    const workspace = useContext(WorkspaceHolder)
+    const workspace = useWorkspace();
 
     const [panel, setPanel] = useState('')
 
