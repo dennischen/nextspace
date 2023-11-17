@@ -8,13 +8,12 @@
  */
 
 export type Workspace = {
-    readonly languages: string[]
     readonly i18n: I18n
     readonly progressIndicator: ProgressIndicator
     readonly themes: string[]
     readonly theme: string
     readonly themepack: Themepack
-    changeLanguage(nextLanguage: string): void
+    
     registerTranslation(language: string, translation: any): void
     changeTheme(nextTheme: string): void
     registerThemepack(theme: string, themepack: Themepack): void
@@ -28,7 +27,9 @@ export type WorkspaceConfig = {
 }
 
 export type I18n = {
+    readonly languages: string[]
     readonly language: string
+    changeLanguage(nextLanguage: string): void
     l(key: string, args?: any): string
 }
 

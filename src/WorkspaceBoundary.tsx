@@ -86,13 +86,6 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     const workspace = useMemo(() => {
         //i18n
         const translationLanguages = translations && translations.map((t) => t.language) || []
-        const i18n: I18n = {
-            language: language,
-            l: (key, args) => {
-                return translationHolder.label(key, args) || key
-            },
-
-        }
         const changeLanguage = (nextLanguage: string) => {
             const loader = assertTranslation(nextLanguage, translations)
             const lstatus = loader?._nextspace._status || 0
@@ -115,6 +108,16 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
             }
         }
+        const i18n: I18n = {
+            languages: translationLanguages,
+            language,
+            changeLanguage,
+            l: (key, args) => {
+                return translationHolder.label(key, args) || key
+            },
+
+        }
+        
 
         //theme
         const themes = themepacks && themepacks.map((t) => t.theme) || []
@@ -163,8 +166,6 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
         }
         const workspace: Workspace = {
             //i18n
-            languages: translationLanguages,
-            changeLanguage,
             registerTranslation: (language, translation) => {
                 translationHolder.register(language, translation)
             },
