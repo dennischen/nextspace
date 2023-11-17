@@ -1,10 +1,10 @@
 'use client'
-import Modal from "@nextspace/components/Modal"
 /*
- * @file-created: 2023-10-30
- * @author: Dennis Chen
- */
+* @file-created: 2023-10-30
+* @author: Dennis Chen
+*/
 
+import Modal from "@nextspace/components/Modal"
 import lazyWithPreload from "@nextspace/components/lazyWithPreload"
 import useWorkspace from "@nextspace/useWorkspace"
 import { Suspense, lazy, useState } from "react"
@@ -14,7 +14,7 @@ const Panel1 = lazy(() => import('@/components/Panel1').then((m) => new Promise<
 const Panel2 = lazyWithPreload(() => import('@/components/Panel2').then((m) => new Promise<any>(resolve => setTimeout(() => resolve(m), 2000))))
 
 export default function LazyPreloader({ id = 'test1' }: { id?: string }) {
-    const workspace = useWorkspace();
+    const workspace = useWorkspace()
 
     const [panel, setPanel] = useState('')
 

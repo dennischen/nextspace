@@ -8,20 +8,20 @@
  */
 
 export type Workspace = {
-    readonly i18n: I18n
-    readonly theme: Theme
     readonly progressIndicator: ProgressIndicator
-
-    registerTranslation(language: string, translation: any): void
-    registerThemepack(code: string, themepack: Themepack): void
-
     withProcessIndicator<P = any, T = any>(processes: Process<P, T> | Process<P, T>[], initValue?: P): AbortablePromise<T>
 }
 
 export type WorkspaceConfig = {
-    readonly translationHolder?: TranslationHolder
-    readonly themepackHolder?: ThemepackHolder
     readonly progressIndicator?: ProgressIndicator
+} & I18nConfig & ThemeConfig
+
+export type I18nConfig = {
+    readonly translationHolder?: TranslationHolder
+}
+
+export type ThemeConfig = {
+    readonly themepackHolder?: ThemepackHolder
 }
 
 export type I18n = {
@@ -29,6 +29,8 @@ export type I18n = {
     readonly language: string
     changeLanguage(language: string): void
     l(key: string, args?: any): string
+
+    _registerTranslation(language: string, translation: any): void
 }
 
 export type TranslationHolder = {
@@ -42,6 +44,8 @@ export type Theme = {
     readonly code: string
     readonly themepack: Themepack
     changeTheme(code: string): void
+
+    _registerThemepack(code: string, themepack: Themepack): void
 }
 
 export type ThemepackHolder = {

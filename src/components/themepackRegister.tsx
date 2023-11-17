@@ -5,7 +5,7 @@
  */
 
 import { Themepack } from "@nextspace/types"
-import useWorkspace from "@nextspace/useWorkspace"
+import useTheme from "@nextspace/useTheme"
 import { ThemepackLoaderProps } from "./themepackLoader"
 
 export type ThemepackRegisterProps = {
@@ -15,17 +15,17 @@ export type ThemepackRegisterProps = {
 }
 
 export function ThemepackRegister({ code, themepack, children }: ThemepackRegisterProps) {
-    const workspace = useWorkspace();
+    const theme = useTheme()
 
     if (code && themepack) {
-        workspace.registerThemepack(code, themepack)
+        theme._registerThemepack(code, themepack)
     }
 
     return children
 }
 
 export function themepackRegister(themepack: Themepack) {
-    return function ThemepackLoaderComp({ code, children }: ThemepackLoaderProps) {
+    return function ThemepackLoader({ code, children }: ThemepackLoaderProps) {
         return <ThemepackRegister code={code} themepack={themepack} >{children}</ThemepackRegister>
     }
 }

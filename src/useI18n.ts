@@ -4,11 +4,10 @@
  */
 
 import { useContext } from "react"
-import WorkspaceHolder from "./contexts/workspace"
+import I18nHolder from "./contexts/i18n"
 
 export function useI18n() {
-    const workspace = useContext(WorkspaceHolder)
-    return workspace.i18n
+    return useContext(I18nHolder)
 }
 
 export default useI18n

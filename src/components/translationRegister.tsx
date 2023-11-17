@@ -3,7 +3,7 @@
  * @author: Dennis Chen
  */
 
-import useWorkspace from "@nextspace/useWorkspace"
+import useI18n from "@nextspace/useI18n"
 
 import { TranslationLoaderProps } from "./translationLoader"
 
@@ -14,17 +14,17 @@ type TranslationRegisterProps = {
 }
 
 function TranslationRegister({ language, translation, children }: TranslationRegisterProps) {
-    const workspace = useWorkspace()
+    const i18n = useI18n()
 
     if (language && translation) {
-        workspace.registerTranslation(language, translation)
+        i18n._registerTranslation(language, translation)
     }
 
     return children
 }
 
 export function translationRegister(translation: any) {
-    return function TranslationLoaderComp({ language, children }: TranslationLoaderProps) {
+    return function TranslationLoader({ language, children }: TranslationLoaderProps) {
         return <TranslationRegister language={language} translation={translation} >{children}</TranslationRegister>
     }
 }

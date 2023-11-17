@@ -4,11 +4,10 @@
  */
 
 import { useContext } from "react"
-import WorkspaceHolder from "./contexts/workspace"
+import ThemeHolder from "./contexts/theme"
 
 export function useTheme() {
-    const workspace = useContext(WorkspaceHolder)
-    return workspace.theme
+    return useContext(ThemeHolder)
 }
 
 
