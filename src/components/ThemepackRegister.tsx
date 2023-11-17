@@ -8,16 +8,16 @@ import { Themepack } from "@nextspace/types"
 import useWorkspace from "@nextspace/useWorkspace"
 
 export type TranslationRegisterProps = {
-    theme: string
+    code: string
     themepack: Themepack
     children?: React.ReactNode
 }
 
-export default function ThemepackRegister({ theme, themepack, children }: TranslationRegisterProps) {
+export default function ThemepackRegister({ code, themepack, children }: TranslationRegisterProps) {
     const workspace = useWorkspace();
 
-    if (theme && themepack) {
-        workspace.registerThemepack(theme, themepack)
+    if (code && themepack) {
+        workspace.registerThemepack(code, themepack)
     }
 
     return children

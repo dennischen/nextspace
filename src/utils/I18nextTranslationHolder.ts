@@ -50,8 +50,8 @@ export default class I18nextTranslationHolder implements TranslationHolder {
         this.i18.addResourceBundle(language, 'translation', translation)
     }
 
-    change(nextLanguage: string) {
-        this.i18.changeLanguage(nextLanguage)
+    change(language: string) {
+        this.i18.changeLanguage(language)
     }
 
     label(key: string, args?: any) {

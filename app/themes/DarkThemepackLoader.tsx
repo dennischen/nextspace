@@ -29,6 +29,6 @@ const themepack: MyThemepack = {
     },
     utils
 }
-export default function ThemepackLoader({ theme, children }: ThemepackLoaderProps) {
-    return <ThemepackRegister theme={theme} themepack={themepack} >{children}</ThemepackRegister>
+export default function ThemepackLoader({ code, children }: ThemepackLoaderProps) {
+    return <ThemepackRegister code={code} themepack={themepack} >{children}</ThemepackRegister>
 }

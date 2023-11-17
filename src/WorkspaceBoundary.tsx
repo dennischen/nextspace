@@ -11,7 +11,7 @@ import { TranslationLoaderComponent, TranslationLoaderProps } from "./components
 import WorkspaceHolder from "./contexts/workspace"
 import './global.scss'
 import nextspaceStyles from "./nextspace.module.scss"
-import { I18n, Process, Themepack, Workspace, WorkspaceConfig } from "./types"
+import { I18n, Process, Theme, Themepack, Workspace, WorkspaceConfig } from "./types"
 import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
 import SimpleThemepackHolder from "./utils/SimpleThemepackHolder"
 import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
@@ -32,48 +32,51 @@ export type WorkspaceBoundaryProps = {
     children?: React.ReactNode
     defaultLanguage?: string
     defaultTheme?: string
-    translations?: TranslationLoaderComponent<React.ComponentType<TranslationLoaderProps>>[]
-    themepacks?: ThemepackLoaderComponent<React.ComponentType<ThemepackLoaderProps>>[]
+    translationLoaders?: TranslationLoaderComponent<React.ComponentType<TranslationLoaderProps>>[]
+    themepackLoaders?: ThemepackLoaderComponent<React.ComponentType<ThemepackLoaderProps>>[]
     config?: WorkspaceConfig
     className?: string
+    style?: CSSProperties
 }
 
 
 function assertTranslation(language: string | undefined,
-    translations: TranslationLoaderComponent<React.ComponentType<TranslationLoaderProps>>[]) {
+    loaders: TranslationLoaderComponent<React.ComponentType<TranslationLoaderProps>>[]) {
     if (language) {
-        const translation = translations.find((t) => t.language === language)
+        const translation = loaders.find((t) => t.language === language)
         if (!translation) {
-            throw `No ${language} found in translations [${translations.join(",")}]`
+            throw `No ${language} found in translations [${loaders.join(",")}]`
         }
         return translation
     }
 }
 
-function assertThemepack(theme: string | undefined,
-    themepacks: ThemepackLoaderComponent<React.ComponentType<ThemepackLoaderProps>>[]) {
-    if (theme) {
-        const themepack = themepacks.find((t) => t.theme === theme)
+function assertThemepack(code: string | undefined,
+    loaders: ThemepackLoaderComponent<React.ComponentType<ThemepackLoaderProps>>[]) {
+    if (code) {
+        const themepack = loaders.find((t) => t.code === code)
         if (!themepack) {
-            throw `No ${theme} found in themepack [${themepacks.map((t) => t.theme).join(",")}]`
+            throw `No ${code} found in themepacks [${loaders.map((t) => t.code).join(",")}]`
         }
         return themepack
     }
 }
 
 export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
-    const { children, className, defaultLanguage = "", translations = [], defaultTheme = "", themepacks = [] } = props
-    let { config = {} } = props
+    const { children, className, style,
+        defaultLanguage = "", translationLoaders = [],
+        defaultTheme: defaultThemeCode = "", themepackLoaders = []
+        , config = {} } = props
 
     const mergedConfig = Object.assign({}, defaultConfig, config) as Required<WorkspaceConfig>
 
-    //check defaultLocal in translations
-    assertTranslation(defaultLanguage, translations)
-    //check defaultTheme in thempacks
-    assertThemepack(defaultTheme, themepacks)
+    //check defaultLocal in loaders
+    assertTranslation(defaultLanguage, translationLoaders)
+    //check defaultTheme in loaders
+    assertThemepack(defaultThemeCode, themepackLoaders)
 
-    const [language, setLanguage] = useState(defaultLanguage || translations.find(t => true)?.language || '')
-    const [theme, setTheme] = useState(defaultTheme || themepacks.find(t => true)?.theme || '')
+    const [language, setLanguage] = useState(defaultLanguage || translationLoaders.find(t => true)?.language || '')
+    const [themeCode, setThemeCode] = useState(defaultThemeCode || themepackLoaders.find(t => true)?.code || '')
     // const [refresh, setRefresh] = useState(0);
     // const _refresh = function () {
     //     setRefresh(refresh + 1);
@@ -81,13 +84,13 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
     const { translationHolder, themepackHolder, progressIndicator } = mergedConfig
     translationHolder.change(language)
-    themepackHolder.change(theme)
+    themepackHolder.change(themeCode)
 
     const workspace = useMemo(() => {
         //i18n
-        const translationLanguages = translations && translations.map((t) => t.language) || []
+        const translationLanguages = translationLoaders && translationLoaders.map((t) => t.language) || []
         const changeLanguage = (nextLanguage: string) => {
-            const loader = assertTranslation(nextLanguage, translations)
+            const loader = assertTranslation(nextLanguage, translationLoaders)
             const lstatus = loader?._nextspace._status || 0
 
             if (language === nextLanguage) {
@@ -117,10 +120,10 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             },
 
         }
-        
+
 
         //theme
-        const themes = themepacks && themepacks.map((t) => t.theme) || []
+        const themeCodes = themepackLoaders && themepackLoaders.map((t) => t.code) || []
         const themepack = new Proxy({} as Themepack, {
             ownKeys(target) {
                 return Reflect.ownKeys(themepackHolder.get())
@@ -130,27 +133,34 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             },
         })
 
-        const changeTheme = (nextTheme: string) => {
-            const loader = assertThemepack(nextTheme, themepacks)
+        const changeTheme = (code: string) => {
+            const loader = assertThemepack(code, themepackLoaders)
             const lstatus = loader?._nextspace._status || 0
 
-            if (theme === nextTheme) {
+            if (themeCode === code) {
                 return
             }
             if (lstatus > 0 || !loader) {
                 //loaded, change theme directly
-                themepackHolder.change(nextTheme)
-                setTheme(nextTheme)
+                themepackHolder.change(code)
+                setThemeCode(code)
             } else {
                 progressIndicator.start()
                 loader.preload().then(() => {
-                    themepackHolder.change(nextTheme)
-                    setTheme(nextTheme)
+                    themepackHolder.change(code)
+                    setThemeCode(code)
                 }).finally(() => {
                     progressIndicator.end()
                 })
 
             }
+        }
+
+        const theme: Theme = {
+            codes: themeCodes,
+            code: themeCode,
+            themepack,
+            changeTheme,
         }
 
         //process
@@ -172,26 +182,23 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             i18n,
 
             //theme
-            themes,
-            theme,
-            changeTheme,
-            registerThemepack: (theme, themepack) => {
-                themepackHolder.register(theme, themepack)
+            registerThemepack: (code, themepack) => {
+                themepackHolder.register(code, themepack)
             },
-            themepack,
+            theme,
 
             //progress
             progressIndicator,
             withProcessIndicator
         }
         return workspace
-    }, [language, translations, translationHolder, theme, themepacks, themepackHolder, progressIndicator])
+    }, [language, translationLoaders, translationHolder, themeCode, themepackLoaders, themepackHolder, progressIndicator])
 
-    const TransationLoader = assertTranslation(language, translations)
-    const ThemepackLoader = assertThemepack(theme, themepacks)
+    const TransationLoader = assertTranslation(language, translationLoaders)
+    const ThemepackLoader = assertThemepack(themeCode, themepackLoaders)
 
     const themepackBoundary = (children: React.ReactNode) => {
-        return ThemepackLoader ? <ThemepackLoader theme={theme}>
+        return ThemepackLoader ? <ThemepackLoader code={themeCode}>
             {children}
         </ThemepackLoader> : children
     }
@@ -205,17 +212,16 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
         return translationBoundary(themepackBoundary(children))
     }
 
-    const style: CSSProperties | undefined = ThemepackLoader ? { colorScheme: themepackHolder.get()?.dark ? 'dark' : 'light' } : undefined
-
     return <WorkspaceHolder.Provider value={workspace}>
-        {loaderBoundary(<Workspace className={className}>{children}</Workspace>)}
+        {loaderBoundary(<Workspace className={className} style={style}>{children}</Workspace>)}
     </WorkspaceHolder.Provider>
 }
 
 // a internal component to apply colorScheme in WorkspaceContext
-function Workspace({ className, children }: { className?: string, children: React.ReactNode }) {
-    const workspace = useWorkspace();
-    const colorScheme = workspace.themepack?.colorScheme
-    return <div data-nextspace-root="" className={clsx(nextspaceStyles.workspace, className)} style={colorScheme ? { colorScheme } : undefined}>{children}</div>
+function Workspace({ className, style, children }: { className?: string, style?: CSSProperties, children: React.ReactNode }) {
+    const workspace = useWorkspace()
+    const colorScheme = workspace.theme?.themepack?.colorScheme
+    style = (style || colorScheme) ? Object.assign({}, style, colorScheme && { colorScheme }) : undefined
+    return <div data-nextspace-root="" className={clsx(nextspaceStyles.workspace, className)} style={style}>{children}</div>
 }
 

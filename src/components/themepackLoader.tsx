@@ -6,13 +6,13 @@
 import lazyWithPreload, { PreloadableComponent } from '@nextspace/components/lazyWithPreload'
 
 export type ThemepackLoaderProps = {
-    theme: string
+    code: string
     children?: React.ReactNode
 }
 
 export type ThemepackLoaderComponent<T extends React.ComponentType<any>> = PreloadableComponent<T> & {
 
-    readonly theme: string
+    readonly code: string
 
     readonly _nextspace: {
         /**
@@ -29,7 +29,7 @@ export type ThemepackLoaderComponent<T extends React.ComponentType<any>> = Prelo
 }
 
 
-export default function themepackLoader<T extends React.ComponentType<any>>(theme: string, factory: () => Promise<{ default: T }>) {
+export default function themepackLoader<T extends React.ComponentType<any>>(code: string, factory: () => Promise<{ default: T }>) {
     let lazyWrap: ThemepackLoaderComponent<T>
     const factoryWrap = () => {
         return factory().then((loadedModule) => {
@@ -46,7 +46,7 @@ export default function themepackLoader<T extends React.ComponentType<any>>(them
         })
     }
     lazyWrap = Object.assign(lazyWithPreload(factoryWrap), {
-        theme,
+        code,
         _nextspace: {
             _status: 0
         }

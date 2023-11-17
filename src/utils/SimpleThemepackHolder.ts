@@ -8,20 +8,20 @@ import { Themepack } from "@nextspace/types"
 export default class SimpleThemepackHolder {
 
     private themepackMap = new Map<string, Themepack>();
-    private theme: string = "";
+    private code: string = "";
 
-    register(theme: string, translation: any) {
+    register(code: string, translation: any) {
         const { themepackMap } = this
-        themepackMap.set(theme, translation)
+        themepackMap.set(code, translation)
     }
 
-    change(nextTheme: string) {
-        this.theme = nextTheme
+    change(code: string) {
+        this.code = code
     }
 
     get(): Themepack {
-        const { theme, themepackMap } = this
-        const val = themepackMap.get(theme)
+        const { code, themepackMap } = this
+        const val = themepackMap.get(code)
         return val || {}
     }
 }

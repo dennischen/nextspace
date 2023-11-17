@@ -15,8 +15,8 @@ export default class SimpleTranslationHolder implements TranslationHolder {
         translationMap.set(language, translation)
     }
 
-    change(nextLanguage: string) {
-        this.language = nextLanguage
+    change(language: string) {
+        this.language = language
     }
 
     label(key: string, args?: any) {

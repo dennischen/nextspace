@@ -63,7 +63,7 @@ describe('<WorkspaceBoundary />', () => {
 
     },)
     it('should render i18n correctly', () => {
-        cy.mount(<WorkspaceBoundary defaultLanguage='en' translations={[EnTranslationLoader]}>
+        cy.mount(<WorkspaceBoundary defaultLanguage='en' translationLoaders={[EnTranslationLoader]}>
             <I18nInfo id="test1" labelKey='en' />
             <I18nInfo id="test2" labelKey='zh' />
         </WorkspaceBoundary>)
@@ -81,7 +81,7 @@ describe('<WorkspaceBoundary />', () => {
             node.find("[data-na]").should('not.exist')
         })
 
-        cy.mount(<WorkspaceBoundary defaultLanguage='zh' translations={[EnTranslationLoader, ZhTranslationLoader]}>
+        cy.mount(<WorkspaceBoundary defaultLanguage='zh' translationLoaders={[EnTranslationLoader, ZhTranslationLoader]}>
             <I18nInfo id="test1" labelKey='en' />
             <I18nInfo id="test2" labelKey='zh' />
         </WorkspaceBoundary>)
@@ -101,7 +101,7 @@ describe('<WorkspaceBoundary />', () => {
 
     },)
     it('should render & siwtch language correctly', () => {
-        cy.mount(<WorkspaceBoundary defaultLanguage='en' translations={[EnTranslationLoader, ZhTranslationLoader]}>
+        cy.mount(<WorkspaceBoundary defaultLanguage='en' translationLoaders={[EnTranslationLoader, ZhTranslationLoader]}>
             <I18nInfo id="test1" labelKey='en' />
             <LanguageSwitcher id="test2" />
         </WorkspaceBoundary>)
@@ -147,7 +147,7 @@ describe('<WorkspaceBoundary />', () => {
     it('should run progress indicator correctly', () => {
         fixProgressIndicator(cy)
 
-        cy.mount(<WorkspaceBoundary defaultLanguage='en' translations={[EnTranslationLoader, ZhTranslationLoader]}>
+        cy.mount(<WorkspaceBoundary defaultLanguage='en' translationLoaders={[EnTranslationLoader, ZhTranslationLoader]}>
             <SequentialProcessor id="test1" procNumber={2} maxTimeout={1000} />
         </WorkspaceBoundary>)
 
@@ -173,7 +173,7 @@ describe('<WorkspaceBoundary />', () => {
     it('should run lazyPreload correctly', () => {
         fixProgressIndicator(cy)
 
-        cy.mount(<WorkspaceBoundary defaultLanguage='en' translations={[EnTranslationLoader]}>
+        cy.mount(<WorkspaceBoundary defaultLanguage='en' translationLoaders={[EnTranslationLoader]}>
             <LazyPreloader id="test1" />
         </WorkspaceBoundary>)
 
@@ -253,7 +253,7 @@ describe('<WorkspaceBoundary />', () => {
     })
 
     it('should render & siwtch theme correctly', () => {
-        cy.mount(<WorkspaceBoundary defaultTheme='light' themepacks={[LightThemepackLoader, DarkThemepackLoader]}>
+        cy.mount(<WorkspaceBoundary defaultTheme='light' themepackLoaders={[LightThemepackLoader, DarkThemepackLoader]}>
             <ThemeSwitcher id="test1" />
         </WorkspaceBoundary>)
         cy.get("#test1").within(() => {

@@ -22,8 +22,8 @@ export default function WrokspaceLayout({
     children: React.ReactNode
 }) {
     return (
-        <WorkspaceBoundary defaultLanguage='en' translations={[EnTranslationLoader, ZhTranslationLoader]}
-            defaultTheme='light' themepacks={[LightThemepackLoader, DarkThemepackLoader]} className={appStyles.app}>
+        <WorkspaceBoundary defaultLanguage='en' translationLoaders={[EnTranslationLoader, ZhTranslationLoader]}
+            defaultTheme='light' themepackLoaders={[LightThemepackLoader, DarkThemepackLoader]} className={appStyles.app}>
             {children}
         </WorkspaceBoundary>
     )
