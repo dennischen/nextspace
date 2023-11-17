@@ -3,8 +3,7 @@
  * @file-created: 2023-11-06
  * @author: Dennis Chen
  */
-import ThemepackRegister from "@nextspace/components/ThemepackRegister"
-import { ThemepackLoaderProps } from "@nextspace/components/themepackLoader"
+import { themepackRegister } from "@nextspace/components/themepackRegister"
 
 import { MyThemepack } from "@/types"
 import lightStyles from './light.module.scss'
@@ -30,6 +29,4 @@ const themepack: MyThemepack = {
     utils
 }
 
-export default function ThemepackLoader({ code, children }: ThemepackLoaderProps) {
-    return <ThemepackRegister code={code} themepack={themepack} >{children}</ThemepackRegister>
-}
+export default themepackRegister(themepack)

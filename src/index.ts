@@ -1,5 +1,6 @@
 
 export * from "./types"
+export type * from "./types"
 import useWorkspace from "./useWorkspace"
 import useI18n from "./useI18n"
 import useTheme from "./useTheme"

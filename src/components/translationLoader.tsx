@@ -10,7 +10,7 @@ export type TranslationLoaderProps = {
     children?: React.ReactNode
 }
 
-export type TranslationLoaderComponent<T extends React.ComponentType<any>> = PreloadableComponent<T> & {
+export type TranslationLoader<T extends React.ComponentType<any>> = PreloadableComponent<T> & {
 
     readonly language: string
 
@@ -29,8 +29,8 @@ export type TranslationLoaderComponent<T extends React.ComponentType<any>> = Pre
 }
 
 
-export default function translationLoader<T extends React.ComponentType<any>>(language: string, factory: () => Promise<{ default: T }>) {
-    let lazyWrap: TranslationLoaderComponent<T>
+export function translationLoader<T extends React.ComponentType<any>>(language: string, factory: () => Promise<{ default: T }>) {
+    let lazyWrap: TranslationLoader<T>
     const factoryWrap = () => {
         return factory().then((loadedModule) => {
             Object.assign(lazyWrap._nextspace, {
@@ -54,4 +54,4 @@ export default function translationLoader<T extends React.ComponentType<any>>(la
     return lazyWrap
 }
 
-
+export default translationLoader

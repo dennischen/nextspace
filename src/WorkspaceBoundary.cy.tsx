@@ -21,12 +21,12 @@ import translationLoader from './components/translationLoader'
 //short wait for async ui operation
 const shortWait = 100
 
-const EnTranslationLoader = translationLoader("en", () => import('@/i18n/EnTranslationLoader'))
-const ZhTranslationLoader = translationLoader("zh", () => import('@/i18n/ZhTranslationLoader'))
+const EnTranslationLoader = translationLoader("en", () => import('@/i18n/enTranslationRegister'))
+const ZhTranslationLoader = translationLoader("zh", () => import('@/i18n/zhTranslationRegister'))
 
 
-const LightThemepackLoader = themepackLoader("light", () => import("@/themes/LightThemepackLoader"))
-const DarkThemepackLoader = themepackLoader("dark", () => import("@/themes/DarkThemepackLoader"))
+const LightThemepackLoader = themepackLoader("light", () => import("@/themes/lightThemepackRegister"))
+const DarkThemepackLoader = themepackLoader("dark", () => import("@/themes/darkThemepackRegister"))
 
 function fixProgressIndicator(cy: Cypress.cy & CyEventEmitter) {
     //https://www.cypress.io/blog/2023/02/16/component-testing-next-js-with-cypress

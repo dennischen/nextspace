@@ -5,18 +5,18 @@
  */
 
 import clsx from "clsx"
-import { CSSProperties, useContext, useMemo, useState } from "react"
+import { CSSProperties, useMemo, useState } from "react"
 import { ThemepackLoaderComponent, ThemepackLoaderProps } from "./components/themepackLoader"
-import { TranslationLoaderComponent, TranslationLoaderProps } from "./components/translationLoader"
+import { TranslationLoader, TranslationLoaderProps } from "./components/translationLoader"
 import WorkspaceHolder from "./contexts/workspace"
 import './global.scss'
 import nextspaceStyles from "./nextspace.module.scss"
 import { I18n, Process, Theme, Themepack, Workspace, WorkspaceConfig } from "./types"
+import useWorkspace from "./useWorkspace"
 import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
 import SimpleThemepackHolder from "./utils/SimpleThemepackHolder"
 import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
 import { sequential } from "./utils/process"
-import useWorkspace from "./useWorkspace"
 
 let defaultConfig: Required<WorkspaceConfig> = {
     translationHolder: new SimpleTranslationHolder(),
@@ -32,7 +32,7 @@ export type WorkspaceBoundaryProps = {
     children?: React.ReactNode
     defaultLanguage?: string
     defaultTheme?: string
-    translationLoaders?: TranslationLoaderComponent<React.ComponentType<TranslationLoaderProps>>[]
+    translationLoaders?: TranslationLoader<React.ComponentType<TranslationLoaderProps>>[]
     themepackLoaders?: ThemepackLoaderComponent<React.ComponentType<ThemepackLoaderProps>>[]
     config?: WorkspaceConfig
     className?: string
@@ -41,7 +41,7 @@ export type WorkspaceBoundaryProps = {
 
 
 function assertTranslation(language: string | undefined,
-    loaders: TranslationLoaderComponent<React.ComponentType<TranslationLoaderProps>>[]) {
+    loaders: TranslationLoader<React.ComponentType<TranslationLoaderProps>>[]) {
     if (language) {
         const translation = loaders.find((t) => t.language === language)
         if (!translation) {

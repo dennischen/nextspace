@@ -6,7 +6,10 @@
 import { useContext } from "react"
 import WorkspaceHolder from "./contexts/workspace"
 
-export default function useTheme() {
+export function useTheme() {
     const workspace = useContext(WorkspaceHolder)
     return workspace.theme
 }
+
+
+export default useTheme
