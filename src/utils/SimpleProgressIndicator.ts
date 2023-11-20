@@ -17,19 +17,24 @@ export default class SimpleProgressIndicator implements ProgressIndicator {
 
     private count = 0;
 
+    private size;
+
     private indicator?: HTMLElement
 
-    constructor({ container, delay }: { container?: HTMLElement, delay?: number } = {}) {
+    private timer?: any
+
+    constructor({ container, size = 32, delay = 500 }: { container?: HTMLElement, delay?: number, size?:number } = {}) {
         this.container = container || typeof document === 'undefined' ? undefined : document.body
-        this.delay = delay || 500
+        this.size = size
+        this.delay = delay
     }
 
-    get loading(){
-        return this.count > 0;
+    get loading() {
+        return this.count > 0
     }
 
     start = () => {
-        const { container, delay } = this
+        const { container, delay, size } = this
         this.count++
 
         if (this.count > 1) {
@@ -41,9 +46,9 @@ export default class SimpleProgressIndicator implements ProgressIndicator {
         } else if (!this.indicator) {
             const indicator = this.indicator = document.createElement("div")
             indicator.className = INDICATOR_CLASS_NAME
-            if (delay > 0) {
+            if (delay > 0 && !this.timer) {
                 indicator.className += ' hide'
-                setTimeout(() => {
+                this.timer = setTimeout(() => {
                     //still showing
                     if (this.indicator) {
                         this.indicator.className = INDICATOR_CLASS_NAME
@@ -51,14 +56,14 @@ export default class SimpleProgressIndicator implements ProgressIndicator {
                 }, delay)
             }
 
-            indicator.innerHTML = `<img src="${spin.src}" width="32px" height="32px"/>`
+            indicator.innerHTML = `<img src="${spin.src}" width="${size}px" height="${size}px"/>`
 
             container.appendChild(indicator)
         }
 
 
     }
-    end = (force?: boolean) => {
+    stop = (force?: boolean) => {
         const { container } = this
         this.count--
 
@@ -74,6 +79,10 @@ export default class SimpleProgressIndicator implements ProgressIndicator {
         } else if (this.indicator) {
             container.removeChild(this.indicator)
             this.indicator = undefined
+            if (this.timer) {
+                clearTimeout(this.timer)
+                this.timer = undefined
+            }
         }
     }
 }
