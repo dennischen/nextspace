@@ -67,7 +67,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             progressIndicator.stop()
         })
         notifyRoutings.clear()
-    }, [pathname, searchParams])
+    }, [pathname, searchParams, notifyRoutings, progressIndicator])
 
     const workspace = useMemo(() => {
         //process
@@ -84,13 +84,13 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
         //routing
         const _notifyRouting = (path: string) => {
-            if(currPath === path){
+            if (currPath === path) {
                 //user route back to current page, reset all previous routing
                 notifyRoutings.forEach(() => {
                     progressIndicator.stop()
                 })
                 notifyRoutings.clear()
-            }else if (!notifyRoutings.has(path)) {
+            } else if (!notifyRoutings.has(path)) {
                 //prvent notify same n time by user clicking when loading
                 notifyRoutings.add(path)
                 progressIndicator.start()

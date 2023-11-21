@@ -9,6 +9,7 @@ import themepackLoader from '@nextspace/components/themepackLoader'
 import translationLoader from '@nextspace/components/translationLoader'
 
 import appStyles from "./app.module.scss"
+import { Suspense } from 'react'
 
 const EnTranslationLoader = translationLoader("en", () => import('@/i18n/enTranslationRegister'))
 const ZhTranslationLoader = translationLoader("zh", () => import('@/i18n/zhTranslationRegister'))
@@ -22,9 +23,11 @@ export default function WrokspaceLayout({
     children: React.ReactNode
 }) {
     return (
-        <WorkspaceBoundary defaultLanguage='en' translationLoaders={[EnTranslationLoader, ZhTranslationLoader]}
-            defaultTheme='light' themepackLoaders={[LightThemepackLoader, DarkThemepackLoader]} className={appStyles.app}>
-            {children}
-        </WorkspaceBoundary>
+        <Suspense fallback={<span>Fallback...</span>}>
+            <WorkspaceBoundary defaultLanguage='en' translationLoaders={[EnTranslationLoader, ZhTranslationLoader]}
+                defaultTheme='light' themepackLoaders={[LightThemepackLoader, DarkThemepackLoader]} className={appStyles.app}>
+                {children}
+            </WorkspaceBoundary>
+        </Suspense>
     )
 }

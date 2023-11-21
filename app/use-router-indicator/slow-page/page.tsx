@@ -5,6 +5,10 @@
 
 import Link from "@nextspace/components/Link"
 
+// Dynamic server usage: Page couldn't be rendered statically because it used `searchParams.key
+//dynaimc for searchParams
+export const dynamic = 'force-dynamic'
+
 export default async function ServerPage({searchParams}:{searchParams?:{ [key: string]: string | undefined }}) {
 
     const res = await new Promise<string>((resolve) => {
