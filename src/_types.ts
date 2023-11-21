@@ -6,7 +6,7 @@
 import { Themepack } from "./types"
 
 export type _Workspace = {
-    _notifyRouting(href:string): void
+    _notifyRouting(path: string): void
 }
 
 export type _I18n = {

@@ -83,10 +83,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
         }
 
         //routing
-        const _notifyRouting = (href: string) => {
-            const url = new URL(href)
-            const path = `${url.pathname}?${url.searchParams}`
-
+        const _notifyRouting = (path: string) => {
             if(currPath === path){
                 //user route back to current page, reset all previous routing
                 notifyRoutings.forEach(() => {
