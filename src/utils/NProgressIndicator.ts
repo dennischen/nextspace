@@ -14,7 +14,7 @@ export default class NProgressIndicator implements ProgressIndicator {
 
     private timer?: any
 
-    constructor(nprogress: NProgress, { delay = 500}: { delay?: number } = {}) {
+    constructor(nprogress: NProgress, { delay = 1000}: { delay?: number } = {}) {
         this.nprogress = nprogress
         this.delay = delay
     }

@@ -23,7 +23,7 @@ export default class SimpleProgressIndicator implements ProgressIndicator {
 
     private timer?: any
 
-    constructor({ container, size = 32, delay = 500 }: { container?: HTMLElement, delay?: number, size?:number } = {}) {
+    constructor({ container, size = 32, delay = 1000 }: { container?: HTMLElement, delay?: number, size?:number } = {}) {
         this.container = container || typeof document === 'undefined' ? undefined : document.body
         this.size = size
         this.delay = delay

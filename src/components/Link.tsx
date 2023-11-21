@@ -1,3 +1,4 @@
+'use client'
 import { useWorkspace } from "@nextspace/useWorkspace"
 import NextLink, { LinkProps } from "next/link"
 
