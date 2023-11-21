@@ -8,13 +8,13 @@ import { Themepack } from "@nextspace/types"
 import useTheme from "@nextspace/useTheme"
 import { ThemepackLoaderProps } from "./themepackLoader"
 
-export type ThemepackRegisterProps = {
+type ThemepackRegisterProps = {
     code: string
     themepack: Themepack
     children?: React.ReactNode
 }
 
-export function ThemepackRegister({ code, themepack, children }: ThemepackRegisterProps) {
+function ThemepackRegister({ code, themepack, children }: ThemepackRegisterProps) {
     const theme = useTheme()
 
     if (code && themepack) {
