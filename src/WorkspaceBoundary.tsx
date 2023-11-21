@@ -5,9 +5,11 @@
  */
 
 import clsx from "clsx"
-import { CSSProperties, useMemo } from "react"
+import { usePathname, useSearchParams } from "next/navigation"
+import { CSSProperties, useEffect, useMemo } from "react"
 import I18nBoundary from "./I18nBoundary"
 import ThemeBoundary from "./ThemeBoundary"
+import { _Workspace } from "./_types"
 import { ThemepackLoaderComponent, ThemepackLoaderProps } from "./components/themepackLoader"
 import { TranslationLoader, TranslationLoaderProps } from "./components/translationLoader"
 import WorkspaceHolder from "./contexts/workspace"
@@ -51,6 +53,22 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
     const { progressIndicator } = mergedConfig
 
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+    const currPath = `${pathname}?${searchParams}`
+
+    //routing
+    const notifyRoutings = useMemo(() => {
+        return new Set<string>()
+    }, [])
+    useEffect(function () {
+        //page are rerouted, decrease all counter
+        notifyRoutings.forEach(() => {
+            progressIndicator.stop()
+        })
+        notifyRoutings.clear()
+    }, [pathname, searchParams])
+
     const workspace = useMemo(() => {
         //process
         const withProcessIndicator = <P, T>(processes: Process<P, T> | Process<P, T>[], initValue?: P) => {
@@ -58,18 +76,35 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             const o = sequential(Array.isArray(processes) ? processes : [processes], initValue)
             //catch/eat this handle path to end indicator
             o.catch(() => { }).finally(() => {
-                progressIndicator.end()
+                progressIndicator.stop()
             })
             //return original so call can catch it
             return o
         }
-        const workspace: Workspace = {
+
+        //routing
+        const _notifyRouting = (path: string) => {
+            if(currPath === path){
+                //user route back to current page, reset all previous routing
+                notifyRoutings.forEach(() => {
+                    progressIndicator.stop()
+                })
+                notifyRoutings.clear()
+            }else if (!notifyRoutings.has(path)) {
+                //prvent notify same n time by user clicking when loading
+                notifyRoutings.add(path)
+                progressIndicator.start()
+            }
+        }
+
+        const workspace: Workspace & _Workspace = {
             //progress
             progressIndicator,
-            withProcessIndicator
+            withProcessIndicator,
+            _notifyRouting
         }
         return workspace
-    }, [progressIndicator])
+    }, [progressIndicator, notifyRoutings, currPath])
 
 
     const themeBoundary = (children: React.ReactNode) => {

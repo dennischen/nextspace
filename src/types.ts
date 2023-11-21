@@ -29,8 +29,6 @@ export type I18n = {
     readonly language: string
     changeLanguage(language: string): void
     l(key: string, args?: any): string
-
-    _registerTranslation(language: string, translation: any): void
 }
 
 export type TranslationHolder = {
@@ -44,8 +42,6 @@ export type Theme = {
     readonly code: string
     readonly themepack: Themepack
     changeTheme(code: string): void
-
-    _registerThemepack(code: string, themepack: Themepack): void
 }
 
 export type ThemepackHolder = {
@@ -66,7 +62,7 @@ export type Process<P = any, T = any> = {
 
 export type ProgressIndicator = {
     start: () => void
-    end: (force?: boolean) => void
+    stop: (force?: boolean) => void
     readonly loading: boolean
 }
 

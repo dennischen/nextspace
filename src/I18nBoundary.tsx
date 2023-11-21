@@ -11,6 +11,7 @@ import './global.scss'
 import { I18n, I18nConfig } from "./types"
 import useWorkspace from "./useWorkspace"
 import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
+import { _I18n } from "./_types"
 
 let defaultConfig: Required<I18nConfig> = {
     translationHolder: new SimpleTranslationHolder(),
@@ -76,12 +77,12 @@ export default function I18nBoundary(props: I18nBoundaryProps) {
                     translationHolder.change(nextLanguage)
                     setLanguage(nextLanguage)
                 }).finally(() => {
-                    workspace?.progressIndicator.end()
+                    workspace?.progressIndicator.stop()
                 })
 
             }
         }
-        const i18n: I18n = {
+        const i18n: I18n & _I18n = {
             languages: translationLanguages,
             language,
             changeLanguage,

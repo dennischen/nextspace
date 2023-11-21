@@ -11,6 +11,7 @@ import './global.scss'
 import { Theme, ThemeConfig, Themepack } from "./types"
 import useWorkspace from "./useWorkspace"
 import SimpleThemepackHolder from "./utils/SimpleThemepackHolder"
+import { _Theme } from "./_types"
 
 let defaultConfig: Required<ThemeConfig> = {
     themepackHolder: new SimpleThemepackHolder()
@@ -85,13 +86,13 @@ export default function ThemeBoundary(props: ThemeBoundaryProps) {
                     themepackHolder.change(code)
                     setThemeCode(code)
                 }).finally(() => {
-                    workspace?.progressIndicator.end()
+                    workspace?.progressIndicator.stop()
                 })
 
             }
         }
 
-        const theme: Theme = {
+        const theme: Theme & _Theme = {
             codes: themeCodes,
             code: themeCode,
             themepack,
