@@ -4,6 +4,7 @@
  */
 
 import lazyWithPreload, { PreloadableComponent } from '@nextspace/components/lazyWithPreload'
+import { TranslationModule } from '@nextspace/types'
 
 export type TranslationLoaderProps = {
     language: string
@@ -28,8 +29,8 @@ export type TranslationLoader<T extends React.ComponentType<any>> = PreloadableC
     }
 }
 
+export function translationLoader<T extends React.ComponentType<any>>(language: string, factory: () => Promise<TranslationModule<T>>) {
 
-export function translationLoader<T extends React.ComponentType<any>>(language: string, factory: () => Promise<{ default: T }>) {
     let lazyWrap: TranslationLoader<T>
     const factoryWrap = () => {
         return factory().then((loadedModule) => {

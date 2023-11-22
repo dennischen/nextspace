@@ -30,6 +30,9 @@ describe('Navigation', () => {
     it('should navigate to link-route-indicator page', () => {
         cy.visit('http://localhost:3000/link-route-indicator')
     })
+    it('should navigate to server-translation page', () => {
+        cy.visit('http://localhost:3000/server-translation')
+    })
 })
 
 // Prevent TypeScript from reading file as legacy script
