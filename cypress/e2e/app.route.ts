@@ -32,9 +32,7 @@ describe('Route', () => {
         //slow page wait for 3000ms
         cy.wait(3000)
 
-        cy.url().then(href=>{
-            expect(href.endsWith("link-route-indicator/slow-page")).to.be.true;
-        })
+        cy.url().should('match', /\/link-route-indicator\/slow-page$/)
 
         cy.get(".link").should('not.exist')
         cy.get(".label").should('be.visible').contains("In Slow Page done")
@@ -43,9 +41,7 @@ describe('Route', () => {
         cy.wait(shortWait)
         cy.get('.nextspace-spi').should('not.exist')
 
-        cy.url().then(href=>{
-            expect(href.endsWith("link-route-indicator")).to.be.true;
-        })
+        cy.url().should('match', /\/link-route-indicator$/)
 
         cy.get(".link").should('be.visible').contains("To Slow page")
 
@@ -55,9 +51,7 @@ describe('Route', () => {
         cy.wait(shortWait)
         cy.get('.nextspace-spi').should('not.exist')
 
-        cy.url().then(href=>{
-            expect(href.endsWith("link-route-indicator/slow-page")).to.be.true;
-        })
+        cy.url().should('match', /\/link-route-indicator\/slow-page$/)
 
         cy.get(".link").should('not.exist')
         cy.get(".label").should('be.visible').contains("In Slow Page done")
@@ -91,9 +85,7 @@ describe('Route', () => {
         //slow page wait for 3000ms
         cy.wait(3000)
 
-        cy.url().then(href=>{
-            expect(href.endsWith("use-router-indicator/slow-page?key=abc")).to.be.true;
-        })
+        cy.url().should('match', /\/use-router-indicator\/slow-page\?key=abc$/)
 
         cy.get(".btn1").should('not.exist')
         cy.get(".btn2").should('not.exist')
@@ -104,9 +96,7 @@ describe('Route', () => {
         cy.wait(shortWait)
         cy.get('.nextspace-spi').should('not.exist')
 
-        cy.url().then(href=>{
-            expect(href.endsWith("use-router-indicator")).to.be.true;
-        })
+        cy.url().should('match', /\/use-router-indicator$/)
 
         cy.get(".btn1").should('be.visible').contains("Push Slow page")
         cy.get(".btn2").should('be.visible').contains("Replace Slow page")
@@ -132,9 +122,7 @@ describe('Route', () => {
         // //slow page wait for 3000ms
         // cy.wait(3000)
 
-        cy.url().then(href=>{
-            expect(href.endsWith("use-router-indicator/slow-page?key=abc")).to.be.true;
-        })
+        cy.url().should('match', /\/use-router-indicator\/slow-page\?key=abc$/)
 
         cy.get(".btn1").should('not.exist')
         cy.get(".btn2").should('not.exist')
@@ -145,9 +133,7 @@ describe('Route', () => {
         cy.wait(shortWait)
         cy.get('.nextspace-spi').should('not.exist')
 
-        cy.url().then(href=>{
-            expect(href.endsWith("use-router-indicator")).to.be.true;
-        })
+        cy.url().should('match', /\/use-router-indicator$/)
 
         cy.get(".btn1").should('be.visible').contains("Push Slow page")
         cy.get(".btn2").should('be.visible').contains("Replace Slow page")
@@ -170,9 +156,7 @@ describe('Route', () => {
         //slow page wait for 3000ms
         cy.wait(3000)
 
-        cy.url().then(href=>{
-            expect(href.endsWith("use-router-indicator/slow-page?key=def")).to.be.true;
-        })
+        cy.url().should('match', /\/use-router-indicator\/slow-page\?key=def$/)
 
         cy.get(".btn1").should('not.exist')
         cy.get(".btn2").should('not.exist')
@@ -183,9 +167,7 @@ describe('Route', () => {
         cy.wait(shortWait)
         cy.get('.nextspace-spi').should('not.exist')
 
-        cy.url().then(href=>{
-            expect(href.endsWith("use-router-indicator")).to.be.true;
-        })
+        cy.url().should('match', /\/use-router-indicator$/)
 
         cy.get(".btn1").should('be.visible').contains("Push Slow page")
         cy.get(".btn2").should('be.visible').contains("Replace Slow page")
@@ -210,9 +192,7 @@ describe('Route', () => {
         // //slow page wait for 3000ms
         // cy.wait(3000)
 
-        cy.url().then(href=>{
-            expect(href.endsWith("use-router-indicator/slow-page?key=def")).to.be.true;
-        })
+        cy.url().should('match', /\/use-router-indicator\/slow-page?key=def$/)
 
         cy.get(".btn1").should('not.exist')
         cy.get(".btn2").should('not.exist')
@@ -223,9 +203,7 @@ describe('Route', () => {
         cy.wait(shortWait)
         cy.get('.nextspace-spi').should('not.exist')
 
-        cy.url().then(href=>{
-            expect(href.endsWith("use-router-indicator")).to.be.true;
-        })
+        cy.url().should('match', /\/use-router-indicator$/)
 
         cy.get(".btn1").should('be.visible').contains("Push Slow page")
         cy.get(".btn2").should('be.visible').contains("Replace Slow page")
