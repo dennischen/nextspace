@@ -19,7 +19,8 @@ export default function Link(props: Omit<React.AnchorHTMLAttributes<HTMLAnchorEl
         const target = evt.currentTarget
         if (!evt.isDefaultPrevented() || (!target.target || target.target !== '_self')) {
             const url = new URL(target.href)
-            workspace._notifyRouting(url.pathname + (url.searchParams?.size > 0 ? ('?' + url.searchParams) : ''))
+            const path = url.pathname + (url.searchParams?.size > 0 ? ('?' + url.searchParams) : '')
+            workspace._notifyRouting(path)
         }
     }
     return <NextLink {...props} />
