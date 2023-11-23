@@ -3,8 +3,8 @@
  * @author: Dennis Chen
  */
 
-import { TranslationHolder } from '@nextspace/types'
-import type { InitOptions, i18n as I18nextInstance } from 'i18next'
+import { ServerI18n, ServerTranslation } from '@nextspace/types'
+import type { i18n as I18nextInstance, InitOptions } from 'i18next'
 
 function handleLabel(i18: I18nextInstance, key: string, options: any = {}) {
     const { returnObjects, ...other } = options
@@ -15,12 +15,13 @@ function handleLabel(i18: I18nextInstance, key: string, options: any = {}) {
     return val['@'] || `[key:${key}]`
 }
 
-export default class I18nextTranslationHolder implements TranslationHolder {
+export default class I18nextI18n implements ServerI18n {
 
     private i18n: I18nextInstance
 
     constructor(
         i18n: I18nextInstance,
+        translation: ServerTranslation,
         opt: { fallbackLng?: string, fallbackTranslation?: { [key: string]: any }, debug?: boolean } = {}
     ) {
         this.i18n = i18n
@@ -44,17 +45,15 @@ export default class I18nextTranslationHolder implements TranslationHolder {
             }
         }
         this.i18n.init(initOpt)
+        this.i18n.addResourceBundle(translation.language, 'translation', translation.translation)
+        this.i18n.changeLanguage(translation.language)
     }
 
-    register(language: string, translation: any) {
-        this.i18n.addResourceBundle(language, 'translation', translation)
+    get language(){
+        return this.i18n.language
     }
 
-    change(language: string) {
-        this.i18n.changeLanguage(language)
-    }
-
-    label(key: string, args?: any) {
+    l(key: string, args?: any) {
         return handleLabel(this.i18n, key, args)
     }
 }

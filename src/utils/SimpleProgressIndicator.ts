@@ -5,6 +5,7 @@
 import { ProgressIndicator } from '@nextspace/types'
 
 import spin from '@nextspace/assets/spin.svg'
+import { SPIN_CLASS_NAME } from '@nextspace/constants'
 
 
 const INDICATOR_CLASS_NAME = 'nextspace-spi'
@@ -15,17 +16,14 @@ export default class SimpleProgressIndicator implements ProgressIndicator {
 
     private delay: number
 
-    private count = 0;
-
-    private size;
+    private count = 0
 
     private indicator?: HTMLElement
 
     private timer?: any
 
-    constructor({ container, size = 32, delay = 1000 }: { container?: HTMLElement, delay?: number, size?:number } = {}) {
+    constructor({ container, delay = 1000 }: { container?: HTMLElement, delay?: number} = {}) {
         this.container = container || typeof document === 'undefined' ? undefined : document.body
-        this.size = size
         this.delay = delay
     }
 
@@ -34,7 +32,7 @@ export default class SimpleProgressIndicator implements ProgressIndicator {
     }
 
     start = () => {
-        const { container, delay, size } = this
+        const { container, delay } = this
         this.count++
 
         if (this.count > 1) {
@@ -56,7 +54,7 @@ export default class SimpleProgressIndicator implements ProgressIndicator {
                 }, delay)
             }
 
-            indicator.innerHTML = `<img src="${spin.src}" width="${size}px" height="${size}px"/>`
+            indicator.innerHTML = `<img class="${SPIN_CLASS_NAME}" src="${spin.src}" />`
 
             container.appendChild(indicator)
         }

@@ -37,6 +37,21 @@ export type TranslationHolder = {
     label(key: string, args?: any): string
 }
 
+export type TranslationModule<T> = {
+    default: T
+    translation: any
+}
+
+export type ServerTranslation = {
+    language: string
+    translation: any
+}
+
+export type ServerI18n = {
+    readonly language: string
+    l(key: string, args?: any): string
+}
+
 export type Theme = {
     readonly codes: string[]
     readonly code: string

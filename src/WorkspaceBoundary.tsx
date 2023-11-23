@@ -4,14 +4,17 @@
  * @author: Dennis Chen
  */
 
+import spin from '@nextspace/assets/spin.svg'
 import clsx from "clsx"
 import { usePathname, useSearchParams } from "next/navigation"
-import { CSSProperties, useEffect, useMemo } from "react"
+import { CSSProperties, Suspense, useEffect, useMemo } from "react"
 import I18nBoundary from "./I18nBoundary"
 import ThemeBoundary from "./ThemeBoundary"
 import { _Workspace } from "./_types"
+import Modal from "./components/Modal"
 import { ThemepackLoaderComponent, ThemepackLoaderProps } from "./components/themepackLoader"
 import { TranslationLoader, TranslationLoaderProps } from "./components/translationLoader"
+import { SPIN_CLASS_NAME } from "./constants"
 import WorkspaceHolder from "./contexts/workspace"
 import './global.scss'
 import nextspaceStyles from "./nextspace.module.scss"
@@ -41,12 +44,14 @@ export type WorkspaceBoundaryProps = {
     config?: WorkspaceConfig
     className?: string
     style?: CSSProperties
+    fallback?: React.ReactNode
 }
 
 export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     const { children, className, style,
         defaultLanguage = "", translationLoaders = [],
-        defaultTheme = "", themepackLoaders = []
+        defaultTheme = "", themepackLoaders = [],
+        fallback = true
         , config = {} } = props
 
     const mergedConfig = Object.assign({}, defaultConfig, config) as Required<WorkspaceConfig>
@@ -55,7 +60,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const currPath = `${pathname}?${searchParams}`
+    const currPath = pathname + (searchParams?.size > 0 ? ('?' + searchParams) : '')
 
     //routing
     const notifyRoutings = useMemo(() => {
@@ -84,6 +89,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
         //routing
         const _notifyRouting = (path: string) => {
+
             if (currPath === path) {
                 //user route back to current page, reset all previous routing
                 notifyRoutings.forEach(() => {
@@ -118,8 +124,16 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
         </I18nBoundary>
     }
 
+    /* eslint-disable-next-line @next/next/no-img-element */
+    const fallbackComp = fallback && (typeof fallback === 'boolean' ? <Modal><img alt='loading' className={SPIN_CLASS_NAME} src={spin.src} /></Modal> : fallback)
+
     const boundaries = (children: React.ReactNode) => {
-        return i18nBoundary(themeBoundary(children))
+        const bo = i18nBoundary(themeBoundary(children))
+        if (fallbackComp) {
+            return <Suspense fallback={fallbackComp}>{bo}</Suspense>
+        } else {
+            return bo
+        }
     }
 
     return <WorkspaceHolder.Provider value={workspace}>
