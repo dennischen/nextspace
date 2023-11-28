@@ -4,7 +4,7 @@
  */
 
 import { Inter } from 'next/font/google'
-import WrokspaceLayout from './WorkspaceLayout'
+import AppLayout from './AppLayout'
 import './global.scss'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -17,9 +17,9 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={inter.className}>
-                <WrokspaceLayout>
+                <AppLayout>
                     {children}
-                </WrokspaceLayout>
+                </AppLayout>
             </body>
         </html>
     )

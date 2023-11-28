@@ -16,7 +16,7 @@ const ZhTranslationLoader = translationLoader("zh", () => import('@/i18n/zhTrans
 const LightThemepackLoader = themepackLoader("light", () => import("@/themes/lightThemepackRegister"))
 const DarkThemepackLoader = themepackLoader("dark", () => import("@/themes/darkThemepackRegister"))
 
-export default function WrokspaceLayout({
+export default function AppLayout({
     children,
 }: {
     children: React.ReactNode
