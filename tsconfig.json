@@ -1,9 +1,10 @@
 {
     "compilerOptions": {
-        "module": "esnext",
-        "target": "es5",
-        "noImplicitAny": true,
+        "target": "ES2015",
+        "module": "esnext", //nextjs need this
+        "moduleResolution": "Node10",
         "esModuleInterop": true,
+        "noImplicitAny": true,
         "lib": [
             "dom",
             "dom.iterable",
@@ -12,6 +13,19 @@
         "jsx": "preserve",
         "skipLibCheck": true,
         "allowJs": true,
+        "resolveJsonModule": true,
+        "strict": true,
+        "declaration": true,
+        "sourceMap": false,
+        "noEmit": true,
+        "incremental": true,
+        "isolatedModules": true,
+        "forceConsistentCasingInFileNames": true,
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
         "paths": {
             "@nextspace/*": [
                 "./src/*"
@@ -22,20 +36,7 @@
             "@cypress/*": [
                 "./cypress/*"
             ]
-        },
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "strict": true,
-        "declaration": true,
-        "sourceMap": false,
-        "noEmit": true,
-        "incremental": true,
-        "isolatedModules": true,
-        "plugins": [
-            {
-                "name": "next"
-            }
-        ]
+        }        
     },
     "include": [
         "next-env.d.ts",
