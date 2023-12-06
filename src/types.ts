@@ -9,6 +9,7 @@
 
 export type Workspace = {
     readonly progressIndicator: ProgressIndicator
+    readonly envVariables: {readonly [key:string]: string | undefined}
     withProcessIndicator<P = any, T = any>(processes: Process<P, T> | Process<P, T>[], initValue?: P): AbortablePromise<T>
 }
 

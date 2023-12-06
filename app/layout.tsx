@@ -9,6 +9,15 @@ import './global.scss'
 
 const inter = Inter({ subsets: ['latin'] })
 
+const envVariables: {
+    [key: string]: string | undefined
+} = {}
+for (var p in process.env) {
+    if (p.startsWith('APP_PUBLIC_')) {
+        envVariables[p] = process.env[p]
+    }
+}
+
 export default function RootLayout({
     children,
 }: {
@@ -17,7 +26,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={inter.className}>
-                <AppLayout>
+                <AppLayout envVariables={envVariables}>
                     {children}
                 </AppLayout>
             </body>

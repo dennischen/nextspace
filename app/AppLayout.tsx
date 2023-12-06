@@ -17,13 +17,16 @@ const LightThemepackLoader = themepackLoader("light", () => import("@/themes/lig
 const DarkThemepackLoader = themepackLoader("dark", () => import("@/themes/darkThemepackRegister"))
 
 export default function AppLayout({
+    envVariables,
     children,
 }: {
+    envVariables?: { [key: string]: string | undefined}
     children: React.ReactNode
 }) {
     return (
         <WorkspaceBoundary defaultLanguage='en' translationLoaders={[EnTranslationLoader, ZhTranslationLoader]}
-            defaultTheme='light' themepackLoaders={[LightThemepackLoader, DarkThemepackLoader]} className={appStyles.app}>
+            defaultTheme='light' themepackLoaders={[LightThemepackLoader, DarkThemepackLoader]} 
+            envVariables={envVariables} className={appStyles.app}>
                 {children}
         </WorkspaceBoundary>
     )

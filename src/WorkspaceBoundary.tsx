@@ -41,6 +41,7 @@ export type WorkspaceBoundaryProps = {
     defaultTheme?: string
     translationLoaders?: TranslationLoader<React.ComponentType<TranslationLoaderProps>>[]
     themepackLoaders?: ThemepackLoaderComponent<React.ComponentType<ThemepackLoaderProps>>[]
+    envVariables?: { readonly [key: string]: string | undefined}
     config?: WorkspaceConfig
     className?: string
     style?: CSSProperties
@@ -51,7 +52,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     const { children, className, style,
         defaultLanguage = "", translationLoaders = [],
         defaultTheme = "", themepackLoaders = [],
-        fallback = true
+        fallback = true, envVariables = {}
         , config = {} } = props
 
     const mergedConfig = Object.assign({}, defaultConfig, config) as Required<WorkspaceConfig>
@@ -104,6 +105,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
         }
 
         const workspace: Workspace & _Workspace = {
+            envVariables,
             //progress
             progressIndicator,
             withProcessIndicator,
