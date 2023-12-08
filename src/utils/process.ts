@@ -41,10 +41,14 @@ function _sequential<P = any, T = any>(state: SequenticalState, processes: Proce
                 state.completed = true
                 resolve(undefined as any as T)
             }
+
+            processes.forEach((proc, idx) => {
+                if (typeof proc !== 'function') {
+                    throw `process ${idx} is not a function, is ${typeof proc}`
+                }
+            })
+
             const [nextProc, ...rest] = processes
-            if (typeof nextProc !== 'function') {
-                throw `process is not a function, is ${typeof nextProc}`
-            }
             nextProc(prev).then((val) => {
                 if (!rest || rest.length === 0) {
                     state.completed = true
@@ -54,8 +58,10 @@ function _sequential<P = any, T = any>(state: SequenticalState, processes: Proce
                 } else {
                     state.step += 1
                     option?.step?.(state.step)
-                    return _sequential(state, rest, val as any as P, option).then((nextVal) => {
+                    _sequential(state, rest, val as any as P, option).then((nextVal) => {
                         resolve(nextVal)
+                    }).catch((err) => {
+                        reject(err)
                     })
                 }
             }).catch((err) => {
