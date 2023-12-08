@@ -60,8 +60,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     const { progressIndicator } = mergedConfig
 
     const pathname = usePathname()
-    const searchParams = useSearchParams()
-    const currPath = pathname + (searchParams?.size > 0 ? ('?' + searchParams) : '')
+    const currPath = pathname
 
     //routing
     const notifyRoutings = useMemo(() => {
@@ -73,7 +72,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             progressIndicator.stop()
         })
         notifyRoutings.clear()
-    }, [pathname, searchParams, notifyRoutings, progressIndicator])
+    }, [pathname, notifyRoutings, progressIndicator])
 
     const workspace = useMemo(() => {
         //process
@@ -112,7 +111,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             _notifyRouting
         }
         return workspace
-    }, [progressIndicator, notifyRoutings, currPath])
+    }, [progressIndicator, notifyRoutings, currPath, envVariables])
 
 
     const themeBoundary = (children: React.ReactNode) => {
