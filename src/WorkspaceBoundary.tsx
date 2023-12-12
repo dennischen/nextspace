@@ -18,7 +18,7 @@ import { SPIN_CLASS_NAME } from "./constants"
 import WorkspaceHolder from "./contexts/workspace"
 import './global.scss'
 import nextspaceStyles from "./nextspace.module.scss"
-import { Process, ProgressIndicator, Workspace, WorkspaceConfig } from "./types"
+import { Process, ProgressIndicator, Store, Workspace, WorkspaceConfig } from "./types"
 import useTheme from "./useTheme"
 import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
 import SimpleThemepackHolder from "./utils/SimpleThemepackHolder"
@@ -61,7 +61,35 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
     const routingDetectorRef = useRef<RoutingDetectorRef>(null)
 
+    const storeMap: Map<string, Store<any>> = useMemo(() => {
+        return new Map()
+    }, [])
+
     const workspace = useMemo(() => {
+
+        //stores
+        type GetStore<S> = {
+            <S,>(name: string): Store<S> | undefined
+            (name: string, init: (() => Store<S>)): Store<S>
+        }
+        const getStore = (<S,>(name: string, init?: Store<S> | (() => Store<S>)) => {
+            let store = storeMap.get(name)
+            if (store) {
+                return store
+            }
+            store = init ? (typeof init === 'function' ? init() : init) : undefined
+            if(store){
+                storeMap.set(name, store);
+            }
+            return store
+        }) as GetStore<any>
+
+        const removeStore = <S,>(name: string) => {
+            const store = storeMap.get(name)
+            store && storeMap.delete(name)
+            return store
+        }
+
         //process
         const withProcessIndicator = <P, T>(processes: Process<P, T> | Process<P, T>[], initValue?: P) => {
             progressIndicator.start()
@@ -81,12 +109,14 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
         const workspace: Workspace & _Workspace = {
             envVariables,
+            getStore,
+            removeStore,
             progressIndicator,
             withProcessIndicator,
             _notifyRouting
         }
         return workspace
-    }, [progressIndicator, envVariables])
+    }, [progressIndicator, envVariables, storeMap])
 
 
     const themeBoundary = (children: React.ReactNode) => {

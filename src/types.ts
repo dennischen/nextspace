@@ -23,20 +23,22 @@ export type Subscribe<L = Listener> = {
 
 export type StoreSubscribe = Subscribe<StoreListener>
 export type StoreListener = () => void
-
 /**
  * common store interface for useSyncExternalStore
  */
 export type Store<S = any> = {
     subscribe: StoreSubscribe
-    snapshot: S
+    snapshot(): S
 }
+
 
 export type Workspace = {
     readonly progressIndicator: ProgressIndicator
     readonly envVariables: { readonly [key: string]: string | undefined }
     withProcessIndicator<P = any, T = any>(processes: Process<P, T> | Process<P, T>[], initValue?: P): AbortablePromise<T>
-    // getStore<S>(name: string, init?: S | (() => S)): Store<S> | undefined
+    getStore<S = any>(name: string): Store<S> | undefined
+    getStore<S = any>(name: string, init: (() => Store<S>)): Store<S>
+    removeStore<S = any>(name: string): Store<S> | undefined
 }
 
 export type WorkspaceConfig = {
