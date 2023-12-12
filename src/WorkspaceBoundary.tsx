@@ -6,8 +6,8 @@
 
 import spin from '@nextspace/assets/spin.svg'
 import clsx from "clsx"
-import { usePathname, useSearchParams } from "next/navigation"
-import { CSSProperties, Suspense, useEffect, useMemo } from "react"
+import { usePathname } from "next/navigation"
+import { CSSProperties, Fragment, Suspense, forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from "react"
 import I18nBoundary from "./I18nBoundary"
 import ThemeBoundary from "./ThemeBoundary"
 import { _Workspace } from "./_types"
@@ -18,7 +18,7 @@ import { SPIN_CLASS_NAME } from "./constants"
 import WorkspaceHolder from "./contexts/workspace"
 import './global.scss'
 import nextspaceStyles from "./nextspace.module.scss"
-import { Process, Workspace, WorkspaceConfig } from "./types"
+import { Process, ProgressIndicator, Workspace, WorkspaceConfig } from "./types"
 import useTheme from "./useTheme"
 import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
 import SimpleThemepackHolder from "./utils/SimpleThemepackHolder"
@@ -41,7 +41,7 @@ export type WorkspaceBoundaryProps = {
     defaultTheme?: string
     translationLoaders?: TranslationLoader<React.ComponentType<TranslationLoaderProps>>[]
     themepackLoaders?: ThemepackLoaderComponent<React.ComponentType<ThemepackLoaderProps>>[]
-    envVariables?: { readonly [key: string]: string | undefined}
+    envVariables?: { readonly [key: string]: string | undefined }
     config?: WorkspaceConfig
     className?: string
     style?: CSSProperties
@@ -59,20 +59,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
     const { progressIndicator } = mergedConfig
 
-    const pathname = usePathname()
-    const currPath = pathname
-
-    //routing
-    const notifyRoutings = useMemo(() => {
-        return new Set<string>()
-    }, [])
-    useEffect(function () {
-        //page are rerouted, decrease all counter
-        notifyRoutings.forEach(() => {
-            progressIndicator.stop()
-        })
-        notifyRoutings.clear()
-    }, [pathname, notifyRoutings, progressIndicator])
+    const routingDetectorRef = useRef<RoutingDetectorRef>(null)
 
     const workspace = useMemo(() => {
         //process
@@ -89,29 +76,17 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
         //routing
         const _notifyRouting = (path: string) => {
-
-            if (currPath === path) {
-                //user route back to current page, reset all previous routing
-                notifyRoutings.forEach(() => {
-                    progressIndicator.stop()
-                })
-                notifyRoutings.clear()
-            } else if (!notifyRoutings.has(path)) {
-                //prvent notify same n time by user clicking when loading
-                notifyRoutings.add(path)
-                progressIndicator.start()
-            }
+            routingDetectorRef.current?.notifyRouting(path)
         }
 
         const workspace: Workspace & _Workspace = {
             envVariables,
-            //progress
             progressIndicator,
             withProcessIndicator,
             _notifyRouting
         }
         return workspace
-    }, [progressIndicator, notifyRoutings, currPath, envVariables])
+    }, [progressIndicator, envVariables])
 
 
     const themeBoundary = (children: React.ReactNode) => {
@@ -138,7 +113,10 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     }
 
     return <WorkspaceHolder.Provider value={workspace}>
-        {boundaries(<Workspace className={className} style={style}>{children}</Workspace>)}
+        <RoutingDetector ref={routingDetectorRef} progressIndicator={progressIndicator} />
+        {boundaries(<Workspace className={className} style={style}>
+            {children}
+        </Workspace>)}
     </WorkspaceHolder.Provider>
 }
 
@@ -150,3 +128,45 @@ function Workspace({ className, style, children }: { className?: string, style?:
     return <div data-nextspace-root="" className={clsx(nextspaceStyles.workspace, className)} style={style}>{children}</div>
 }
 
+// a internal component to handle pathname routing to prevent whole workspace reload
+type RoutingDetectorRef = {
+    notifyRouting: (path: string) => void
+}
+type RoutingDetectorProps = {
+    progressIndicator: ProgressIndicator
+}
+
+const RoutingDetector = forwardRef<RoutingDetectorRef, RoutingDetectorProps>(function RouteDetector({ progressIndicator }, ref) {
+    const currPath = usePathname()
+    const routings = useMemo(() => {
+        return new Set<string>()
+    }, [])
+
+    useImperativeHandle(ref, () => {
+        return {
+            currPath,
+            notifyRouting: (path: string) => {
+                if (currPath === path) {
+                    //user route back to current page, reset all previous routing
+                    routings.forEach(() => {
+                        progressIndicator.stop()
+                    })
+                    routings.clear()
+                } else if (!routings.has(path)) {
+                    //prvent notify same n time by user clicking when loading
+                    routings.add(path)
+                    progressIndicator.start()
+                }
+            }
+        }
+    }, [currPath, routings, progressIndicator])
+
+    useEffect(function () {
+        //page are rerouted, decrease all counter
+        routings.forEach(() => {
+            progressIndicator.stop()
+        })
+        routings.clear()
+    }, [currPath, routings, progressIndicator])
+    return <Fragment />
+})

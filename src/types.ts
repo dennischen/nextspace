@@ -7,10 +7,36 @@
  * @author: Dennis Chen
  */
 
+/**
+ * common event subscribe & unscribe interface,
+ * it is usually use subscribe and unsubscribe in useEffect of a component
+ */
+export type Unsubscribe = {
+    (): void
+}
+
+export type Listener = Function
+
+export type Subscribe<L = Listener> = {
+    (listener: L): Unsubscribe
+}
+
+export type StoreSubscribe = Subscribe<StoreListener>
+export type StoreListener = () => void
+
+/**
+ * common store interface for useSyncExternalStore
+ */
+export type Store<S = any> = {
+    subscribe: StoreSubscribe
+    snapshot: S
+}
+
 export type Workspace = {
     readonly progressIndicator: ProgressIndicator
-    readonly envVariables: {readonly [key:string]: string | undefined}
+    readonly envVariables: { readonly [key: string]: string | undefined }
     withProcessIndicator<P = any, T = any>(processes: Process<P, T> | Process<P, T>[], initValue?: P): AbortablePromise<T>
+    // getStore<S>(name: string, init?: S | (() => S)): Store<S> | undefined
 }
 
 export type WorkspaceConfig = {
