@@ -19,7 +19,8 @@ export default abstract class AbstractStore<S = any> implements Store<S>{
         }
     }
 
-    abstract snapshot(): S
+    //use arrow method to prevent calling this undefinded whe passing subscribe and snapshot fuction
+    abstract snapshot: () => S
 
     protected emit(){
         for (let l of this.listeners) {
