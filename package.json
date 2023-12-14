@@ -6,24 +6,20 @@
     "scripts": {
         "dev": "next dev",
         "lint": "next lint",
-        
         "test:component:open": "cypress open --component",
         "test:component": "cypress run --component",
         "test:e2e:open": "start-server-and-test dev http://localhost:3000 \"cypress open --e2e\"",
         "test:e2e": "start-server-and-test dev http://localhost:3000 \"cypress run --e2e\"",
         "test": "yarn test:component && yarn test:e2e",
-        
         "build": "next build",
         "start": "next start",
         "build-start": "next build & next start",
-
         "clean": "rimraf dist/",
         "copy-files": "copyfiles -u 1 src/**/*.svg src/*.scss src/**/*.scss dist/",
         "compile": "tsc -p tsconfig.dist.json",
         "compile-watch": "tsc -p tsconfig.dist.json -w",
         "dist": "yarn copy-files && yarn compile",
         "dist-watch": "yarn copy-files && yarn compile-watch",
-        
         "release": "node build-help.js --release-package-json"
     },
     "dependencies": {
@@ -33,13 +29,15 @@
         "nprogress": "^0.2.0",
         "react": "^18",
         "react-dom": "^18",
-        "sass": "^1.69.4"
+        "sass": "^1.69.4",
+        "uuid": "^9.0.1"
     },
     "devDependencies": {
         "@types/node": "^20",
         "@types/nprogress": "^0.2.2",
         "@types/react": "^18",
         "@types/react-dom": "^18",
+        "@types/uuid": "^9.0.7",
         "copyfiles": "^2.4.1",
         "cypress": "^13.4.0",
         "eslint": "^8",

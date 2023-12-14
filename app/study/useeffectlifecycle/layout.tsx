@@ -1,8 +1,11 @@
+import { context } from "@nextspace/server/request"
 import TheLayout from "./TheLayout"
 
 
-export default function layout({ children }: { children: React.ReactNode }) {
+export default async function layout({ children }: { children: React.ReactNode }) {
     console.log("layout useeffectlifectycle body")
+
+    console.log("layout useeffectlifectycle request context", context())
 
     return <div>
         [layout useeffectlifectycle]
