@@ -14,12 +14,13 @@ import { _Workspace } from "./_types"
 import Modal from "./components/Modal"
 import { ThemepackLoaderComponent, ThemepackLoaderProps } from "./components/themepackLoader"
 import { TranslationLoader, TranslationLoaderProps } from "./components/translationLoader"
-import { SPIN_CLASS_NAME } from "./constants"
+import { CLASS_NAME_SPIN, EVENT_ON_ROUTE } from "./constants"
 import WorkspaceHolder from "./contexts/workspace"
 import './global.scss'
 import nextspaceStyles from "./nextspace.module.scss"
-import { Process, ProgressIndicator, Store, Workspace, WorkspaceConfig } from "./types"
+import { Process, ProgressIndicator, Store, Workspace, WorkspaceConfig, WorkspaceListener } from "./types"
 import useTheme from "./useTheme"
+import useWorkspace from './useWorkspace'
 import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
 import SimpleThemepackHolder from "./utils/SimpleThemepackHolder"
 import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
@@ -65,6 +66,10 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
         return new Map()
     }, [])
 
+    const listeners: WorkspaceListener[] = useMemo(() => {
+        return []
+    }, [])
+
     const workspace = useMemo(() => {
 
         //stores
@@ -78,8 +83,8 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
                 return store
             }
             store = init ? (typeof init === 'function' ? init() : init) : undefined
-            if(store){
-                storeMap.set(name, store);
+            if (store) {
+                storeMap.set(name, store)
             }
             return store
         }) as GetStore<any>
@@ -89,6 +94,23 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             store && storeMap.delete(name)
             return store
         }
+
+        //subscribe & emit
+        const subscribe = (listener: WorkspaceListener) => {
+            listeners.push(listener)
+            return () => {
+                let i = listeners.lastIndexOf(listener)
+                if (i >= 0) {
+                    listeners.splice(i, 1)
+                }
+            }
+        }
+        const emit = (eventName: string, eventData: any) => {
+            listeners.forEach((l) => {
+                l(eventName, eventData)
+            })
+        }
+
 
         //process
         const withProcessIndicator = <P, T>(processes: Process<P, T> | Process<P, T>[], initValue?: P) => {
@@ -111,12 +133,14 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             envVariables,
             getStore,
             removeStore,
+            subscribe,
+            emit,
             progressIndicator,
             withProcessIndicator,
             _notifyRouting
         }
         return workspace
-    }, [progressIndicator, envVariables, storeMap])
+    }, [progressIndicator, envVariables, storeMap, listeners])
 
 
     const themeBoundary = (children: React.ReactNode) => {
@@ -131,7 +155,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     }
 
     /* eslint-disable-next-line @next/next/no-img-element */
-    const fallbackComp = fallback && (typeof fallback === 'boolean' ? <Modal><img alt='loading' className={SPIN_CLASS_NAME} src={spin.src} /></Modal> : fallback)
+    const fallbackComp = fallback && (typeof fallback === 'boolean' ? <Modal><img alt='loading' className={CLASS_NAME_SPIN} src={spin.src} /></Modal> : fallback)
 
     const boundaries = (children: React.ReactNode) => {
         const bo = i18nBoundary(themeBoundary(children))
@@ -167,16 +191,17 @@ type RoutingDetectorProps = {
 }
 
 const RoutingDetector = forwardRef<RoutingDetectorRef, RoutingDetectorProps>(function RouteDetector({ progressIndicator }, ref) {
-    const currPath = usePathname()
+    const workspace = useWorkspace()
+    const pathname = usePathname()
     const routings = useMemo(() => {
         return new Set<string>()
     }, [])
 
     useImperativeHandle(ref, () => {
         return {
-            currPath,
+            pathname,
             notifyRouting: (path: string) => {
-                if (currPath === path) {
+                if (pathname === path) {
                     //user route back to current page, reset all previous routing
                     routings.forEach(() => {
                         progressIndicator.stop()
@@ -189,7 +214,7 @@ const RoutingDetector = forwardRef<RoutingDetectorRef, RoutingDetectorProps>(fun
                 }
             }
         }
-    }, [currPath, routings, progressIndicator])
+    }, [pathname, routings, progressIndicator])
 
     useEffect(function () {
         //page are rerouted, decrease all counter
@@ -197,6 +222,11 @@ const RoutingDetector = forwardRef<RoutingDetectorRef, RoutingDetectorProps>(fun
             progressIndicator.stop()
         })
         routings.clear()
-    }, [currPath, routings, progressIndicator])
+    }, [pathname, routings, progressIndicator])
+
+    //emit when pathname changing
+    useEffect(function () {
+        workspace.emit(EVENT_ON_ROUTE, { pathname })
+    }, [workspace, pathname])
     return <Fragment />
 })

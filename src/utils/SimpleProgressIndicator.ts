@@ -5,7 +5,7 @@
 import { ProgressIndicator } from '@nextspace/types'
 
 import spin from '@nextspace/assets/spin.svg'
-import { SPIN_CLASS_NAME } from '@nextspace/constants'
+import { CLASS_NAME_SPIN } from '@nextspace/constants'
 
 
 const INDICATOR_CLASS_NAME = 'nextspace-spi'
@@ -54,7 +54,7 @@ export default class SimpleProgressIndicator implements ProgressIndicator {
                 }, delay)
             }
 
-            indicator.innerHTML = `<img class="${SPIN_CLASS_NAME}" src="${spin.src}" />`
+            indicator.innerHTML = `<img class="${CLASS_NAME_SPIN}" src="${spin.src}" />`
 
             container.appendChild(indicator)
         }

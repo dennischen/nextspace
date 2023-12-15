@@ -23,7 +23,7 @@ export default abstract class AbstractStore<S = any> implements Store<S>{
         }
     }
 
-    //use arrow method to prevent calling this undefinded whe passing subscribe and snapshot fuction
+    //use arrow method to prevent calling this undefinded whe passing subscribe and getSnapshot fuction
     subscribe = (listener: () => void) => {
         this.listeners = [...this.listeners, listener]
         return () => {
@@ -31,8 +31,8 @@ export default abstract class AbstractStore<S = any> implements Store<S>{
         }
     }
 
-    //use arrow method to prevent calling this undefinded whe passing subscribe and snapshot fuction
-    snapshot = () => {
+    //use arrow method to prevent calling this undefinded whe passing subscribe and getSnapshot fuction
+    getSnapshot = () => {
         return this.state
     }
 

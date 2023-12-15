@@ -4,4 +4,7 @@
  * @author: Dennis Chen
  */
 
-export const SPIN_CLASS_NAME = 'nextspace-spin'
+export const CLASS_NAME_SPIN = 'nextspace-spin'
+
+
+export const EVENT_ON_ROUTE = "onRoute"
