@@ -77,6 +77,7 @@ export type I18n = {
 }
 
 export type TranslationHolder = {
+    readonly language: string
     register(language: string, translation: any): void
     change(language: string): void
     label(key: string, args?: any): string
@@ -105,6 +106,7 @@ export type Theme = {
 }
 
 export type ThemepackHolder = {
+    readonly code: string
     register(code: string, themepack: Themepack): void
     change(code: string): void
     get(): Themepack

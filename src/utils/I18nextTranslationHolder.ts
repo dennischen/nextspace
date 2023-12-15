@@ -19,6 +19,8 @@ export default class I18nextTranslationHolder implements TranslationHolder {
 
     private i18n: I18nextInstance
 
+    private _language: string = ""
+
     constructor(
         i18n: I18nextInstance,
         opt: { fallbackLng?: string, fallbackTranslation?: { [key: string]: any }, debug?: boolean } = {}
@@ -46,11 +48,16 @@ export default class I18nextTranslationHolder implements TranslationHolder {
         this.i18n.init(initOpt)
     }
 
+    get language(){
+        return this._language
+    }
+
     register(language: string, translation: any) {
         this.i18n.addResourceBundle(language, 'translation', translation)
     }
 
     change(language: string) {
+        this._language = language
         this.i18n.changeLanguage(language)
     }
 

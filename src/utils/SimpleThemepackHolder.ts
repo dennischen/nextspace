@@ -8,7 +8,12 @@ import { Themepack } from "@nextspace/types"
 export default class SimpleThemepackHolder {
 
     private themepackMap = new Map<string, Themepack>();
-    private code: string = "";
+    private _code: string = "";
+
+
+    get code() {
+        return this._code
+    }
 
     register(code: string, translation: any) {
         const { themepackMap } = this
@@ -16,7 +21,7 @@ export default class SimpleThemepackHolder {
     }
 
     change(code: string) {
-        this.code = code
+        this._code = code
     }
 
     get(): Themepack {

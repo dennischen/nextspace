@@ -14,7 +14,7 @@ import { _Workspace } from "./_types"
 import Modal from "./components/Modal"
 import { ThemepackLoaderComponent, ThemepackLoaderProps } from "./components/themepackLoader"
 import { TranslationLoader, TranslationLoaderProps } from "./components/translationLoader"
-import { CLASS_NAME_SPIN, EVENT_ON_ROUTE } from "./constants"
+import { CLASS_NAME_SPIN, EMPTY_ARRAY, EMPTY_OBJECT, EVENT_ON_ROUTE } from "./constants"
 import WorkspaceHolder from "./contexts/workspace"
 import './global.scss'
 import nextspaceStyles from "./nextspace.module.scss"
@@ -22,19 +22,9 @@ import { Process, ProgressIndicator, Store, Workspace, WorkspaceConfig, Workspac
 import useTheme from "./useTheme"
 import useWorkspace from './useWorkspace'
 import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
-import SimpleThemepackHolder from "./utils/SimpleThemepackHolder"
-import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
 import { sequential } from "./utils/process"
-
-let defaultConfig: Required<WorkspaceConfig> = {
-    translationHolder: new SimpleTranslationHolder(),
-    progressIndicator: new SimpleProgressIndicator(),
-    themepackHolder: new SimpleThemepackHolder()
-}
-
-export function setDefaultConfig(config: WorkspaceConfig) {
-    defaultConfig = Object.assign({}, defaultConfig, config)
-}
+import SimpleThemepackHolder from './utils/SimpleThemepackHolder'
+import SimpleTranslationHolder from './utils/SimpleTranslationHolder'
 
 export type WorkspaceBoundaryProps = {
     children?: React.ReactNode
@@ -51,14 +41,22 @@ export type WorkspaceBoundaryProps = {
 
 export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     const { children, className, style,
-        defaultLanguage = "", translationLoaders = [],
-        defaultTheme = "", themepackLoaders = [],
-        fallback = true, envVariables = {}
-        , config = {} } = props
+        defaultLanguage = "", translationLoaders = EMPTY_ARRAY,
+        defaultTheme = "", themepackLoaders = EMPTY_ARRAY,
+        fallback = true, envVariables = EMPTY_OBJECT
+        , config = EMPTY_OBJECT as WorkspaceConfig } = props
 
-    const mergedConfig = Object.assign({}, defaultConfig, config) as Required<WorkspaceConfig>
+    const progressIndicator = useMemo(() => {
+        return config.progressIndicator || new SimpleProgressIndicator()
+    }, [config])
 
-    const { progressIndicator } = mergedConfig
+    const themepackHolder = useMemo(() => {
+        return config.themepackHolder || new SimpleThemepackHolder()
+    }, [config])
+
+    const translationHolder = useMemo(() => {
+        return config.translationHolder || new SimpleTranslationHolder()
+    }, [config])
 
     const routingDetectorRef = useRef<RoutingDetectorRef>(null)
 
@@ -144,12 +142,12 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
 
     const themeBoundary = (children: React.ReactNode) => {
-        return <ThemeBoundary defaultTheme={defaultTheme} themepackLoaders={themepackLoaders} config={mergedConfig} >
+        return <ThemeBoundary defaultTheme={defaultTheme} themepackLoaders={themepackLoaders} config={{ themepackHolder }} >
             {children}
         </ThemeBoundary>
     }
     const i18nBoundary = (children: React.ReactNode) => {
-        return <I18nBoundary defaultLanguage={defaultLanguage} translationLoaders={translationLoaders} config={mergedConfig} >
+        return <I18nBoundary defaultLanguage={defaultLanguage} translationLoaders={translationLoaders} config={{ translationHolder }} >
             {children}
         </I18nBoundary>
     }
@@ -159,6 +157,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
     const boundaries = (children: React.ReactNode) => {
         const bo = i18nBoundary(themeBoundary(children))
+        // const bo = themeBoundary(i18nBoundary(children))
         if (fallbackComp) {
             return <Suspense fallback={fallbackComp}>{bo}</Suspense>
         } else {
@@ -178,6 +177,7 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 function Workspace({ className, style, children }: { className?: string, style?: CSSProperties, children: React.ReactNode }) {
     const theme = useTheme()
     const colorScheme = theme?.themepack?.colorScheme
+
     style = (style || colorScheme) ? Object.assign({}, style, colorScheme && { colorScheme }) : undefined
     return <div data-nextspace-root="" className={clsx(nextspaceStyles.workspace, className)} style={style}>{children}</div>
 }

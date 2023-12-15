@@ -12,14 +12,8 @@ import { Theme, ThemeConfig, Themepack } from "./types"
 import useWorkspace from "./useWorkspace"
 import SimpleThemepackHolder from "./utils/SimpleThemepackHolder"
 import { _Theme } from "./_types"
+import { EMPTY_ARRAY, EMPTY_OBJECT } from "./constants"
 
-let defaultConfig: Required<ThemeConfig> = {
-    themepackHolder: new SimpleThemepackHolder()
-}
-
-export function setDefaultConfig(config: ThemeConfig) {
-    defaultConfig = Object.assign({}, defaultConfig, config)
-}
 
 export type ThemeBoundaryProps = {
     children?: React.ReactNode
@@ -42,19 +36,21 @@ function assertThemepack(code: string | undefined,
 
 export default function ThemeBoundary(props: ThemeBoundaryProps) {
     const { children,
-        defaultTheme: defaultThemeCode = "", themepackLoaders = []
-        , config = {} } = props
+        defaultTheme: defaultThemeCode = "", themepackLoaders = EMPTY_ARRAY
+        , config = EMPTY_OBJECT as ThemeConfig } = props
 
     const workspace = useWorkspace()
 
-    const mergedConfig = Object.assign({}, defaultConfig, config) as Required<ThemeConfig>
+    const themepackHolder = useMemo(() => {
+        return config.themepackHolder || new SimpleThemepackHolder()
+    }, [config])
 
     //check defaultTheme in loaders
+    assertThemepack(themepackHolder.code, themepackLoaders)
     assertThemepack(defaultThemeCode, themepackLoaders)
 
-    const [themeCode, setThemeCode] = useState(defaultThemeCode || themepackLoaders.find(t => true)?.code || '')
+    const [themeCode, setThemeCode] = useState(themepackHolder.code || defaultThemeCode || themepackLoaders.find(t => true)?.code || '')
 
-    const { themepackHolder } = mergedConfig
     themepackHolder.change(themeCode)
 
     const theme = useMemo(() => {

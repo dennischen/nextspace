@@ -8,7 +8,11 @@ import { TranslationHolder } from '@nextspace/types'
 export default class SimpleTranslationHolder implements TranslationHolder {
 
     private translationMap = new Map<string, any>();
-    private language: string = "";
+    private _language: string = "";
+
+    get language(){
+        return this._language
+    }
 
     register(language: string, translation: any) {
         const { translationMap } = this
@@ -16,11 +20,11 @@ export default class SimpleTranslationHolder implements TranslationHolder {
     }
 
     change(language: string) {
-        this.language = language
+        this._language = language
     }
 
     label(key: string, args?: any) {
-        const { language, translationMap } = this
+        const { _language: language, translationMap } = this
         const val = translationMap.get(language)?.[key]
         return val || key
     }
