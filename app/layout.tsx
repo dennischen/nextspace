@@ -27,7 +27,7 @@ export default function RootLayout({
 
     console.log("root layout request context", context())
     return (
-        <html lang="en">
+        <html>
             <body className={inter.className}>
                 <AppLayout envVariables={envVariables}>
                     {children}

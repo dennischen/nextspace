@@ -19,12 +19,13 @@ import WorkspaceHolder from "./contexts/workspace"
 import './global.scss'
 import nextspaceStyles from "./nextspace.module.scss"
 import { Process, ProgressIndicator, Store, Workspace, WorkspaceConfig, WorkspaceListener } from "./types"
+import useI18n from './useI18n'
 import useTheme from "./useTheme"
 import useWorkspace from './useWorkspace'
 import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
-import { sequential } from "./utils/process"
 import SimpleThemepackHolder from './utils/SimpleThemepackHolder'
 import SimpleTranslationHolder from './utils/SimpleTranslationHolder'
+import { sequential } from "./utils/process"
 
 export type WorkspaceBoundaryProps = {
     children?: React.ReactNode
@@ -175,11 +176,13 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
 // a internal component to apply colorScheme in WorkspaceContext
 function Workspace({ className, style, children }: { className?: string, style?: CSSProperties, children: React.ReactNode }) {
+
+    const i18n = useI18n()
     const theme = useTheme()
     const colorScheme = theme?.themepack?.colorScheme
 
     style = (style || colorScheme) ? Object.assign({}, style, colorScheme && { colorScheme }) : undefined
-    return <div data-nextspace-root="" className={clsx(nextspaceStyles.workspace, className)} style={style}>{children}</div>
+    return <div data-nextspace-root="" className={clsx(nextspaceStyles.workspace, className)} style={style} lang={i18n.language}>{children}</div>
 }
 
 // a internal component to handle pathname routing to prevent whole workspace reload
