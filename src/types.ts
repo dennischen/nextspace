@@ -28,8 +28,14 @@ export type StoreListener = () => void
  */
 export type Store<S = any> = {
     subscribe: StoreSubscribe
-    snapshot(): S
+    getSnapshot(): S
 }
+
+/**
+ * workspace evet scribe listener
+ */
+export type WorkspaceSubscribe<D = any> = Subscribe<WorkspaceListener<D>>
+export type WorkspaceListener<D = any> = (eventName: string, eventData: D) => void
 
 
 export type Workspace = {
@@ -39,6 +45,16 @@ export type Workspace = {
     getStore<S = any>(name: string): Store<S> | undefined
     getStore<S = any>(name: string, init: (() => Store<S>)): Store<S>
     removeStore<S = any>(name: string): Store<S> | undefined
+
+    /**
+     * subscribe workspace event, you should call this in useEffect and return the unsubscribe to cleanup
+     */
+    subscribe: WorkspaceSubscribe
+
+    /**
+     * emit event to all subscribed listener by subscribe
+     */
+    emit: WorkspaceListener
 }
 
 export type WorkspaceConfig = {
@@ -61,6 +77,7 @@ export type I18n = {
 }
 
 export type TranslationHolder = {
+    readonly language: string
     register(language: string, translation: any): void
     change(language: string): void
     label(key: string, args?: any): string
@@ -89,6 +106,7 @@ export type Theme = {
 }
 
 export type ThemepackHolder = {
+    readonly code: string
     register(code: string, themepack: Themepack): void
     change(code: string): void
     get(): Themepack

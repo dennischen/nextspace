@@ -12,14 +12,8 @@ import { I18n, I18nConfig } from "./types"
 import useWorkspace from "./useWorkspace"
 import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
 import { _I18n } from "./_types"
+import { EMPTY_ARRAY, EMPTY_OBJECT } from "./constants"
 
-let defaultConfig: Required<I18nConfig> = {
-    translationHolder: new SimpleTranslationHolder(),
-}
-
-export function setDefaultConfig(config: I18nConfig) {
-    defaultConfig = Object.assign({}, defaultConfig, config)
-}
 
 export type I18nBoundaryProps = {
     children?: React.ReactNode
@@ -42,19 +36,21 @@ function assertTranslation(language: string | undefined,
 
 export default function I18nBoundary(props: I18nBoundaryProps) {
     const { children,
-        defaultLanguage = "", translationLoaders = []
-        , config = {} } = props
+        defaultLanguage = "", translationLoaders = EMPTY_ARRAY
+        , config = EMPTY_OBJECT as I18nConfig } = props
 
     const workspace = useWorkspace()
 
-    const mergedConfig = Object.assign({}, defaultConfig, config) as Required<I18nConfig>
+    const translationHolder = useMemo(() => {
+        return config.translationHolder || new SimpleTranslationHolder()
+    }, [config])
 
     //check defaultLocal in loaders
+    assertTranslation(translationHolder.language, translationLoaders)
     assertTranslation(defaultLanguage, translationLoaders)
 
-    const [language, setLanguage] = useState(defaultLanguage || translationLoaders.find(t => true)?.language || '')
+    const [language, setLanguage] = useState(translationHolder.language || defaultLanguage || translationLoaders.find(t => true)?.language || '')
 
-    const { translationHolder } = mergedConfig
     translationHolder.change(language)
 
     const i18n = useMemo(() => {

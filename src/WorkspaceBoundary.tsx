@@ -14,26 +14,18 @@ import { _Workspace } from "./_types"
 import Modal from "./components/Modal"
 import { ThemepackLoaderComponent, ThemepackLoaderProps } from "./components/themepackLoader"
 import { TranslationLoader, TranslationLoaderProps } from "./components/translationLoader"
-import { SPIN_CLASS_NAME } from "./constants"
+import { CLASS_NAME_SPIN, EMPTY_ARRAY, EMPTY_OBJECT, EVENT_ON_ROUTE } from "./constants"
 import WorkspaceHolder from "./contexts/workspace"
 import './global.scss'
 import nextspaceStyles from "./nextspace.module.scss"
-import { Process, ProgressIndicator, Store, Workspace, WorkspaceConfig } from "./types"
+import { Process, ProgressIndicator, Store, Workspace, WorkspaceConfig, WorkspaceListener } from "./types"
+import useI18n from './useI18n'
 import useTheme from "./useTheme"
+import useWorkspace from './useWorkspace'
 import SimpleProgressIndicator from "./utils/SimpleProgressIndicator"
-import SimpleThemepackHolder from "./utils/SimpleThemepackHolder"
-import SimpleTranslationHolder from "./utils/SimpleTranslationHolder"
+import SimpleThemepackHolder from './utils/SimpleThemepackHolder'
+import SimpleTranslationHolder from './utils/SimpleTranslationHolder'
 import { sequential } from "./utils/process"
-
-let defaultConfig: Required<WorkspaceConfig> = {
-    translationHolder: new SimpleTranslationHolder(),
-    progressIndicator: new SimpleProgressIndicator(),
-    themepackHolder: new SimpleThemepackHolder()
-}
-
-export function setDefaultConfig(config: WorkspaceConfig) {
-    defaultConfig = Object.assign({}, defaultConfig, config)
-}
 
 export type WorkspaceBoundaryProps = {
     children?: React.ReactNode
@@ -50,19 +42,31 @@ export type WorkspaceBoundaryProps = {
 
 export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
     const { children, className, style,
-        defaultLanguage = "", translationLoaders = [],
-        defaultTheme = "", themepackLoaders = [],
-        fallback = true, envVariables = {}
-        , config = {} } = props
+        defaultLanguage = "", translationLoaders = EMPTY_ARRAY,
+        defaultTheme = "", themepackLoaders = EMPTY_ARRAY,
+        fallback = true, envVariables = EMPTY_OBJECT
+        , config = EMPTY_OBJECT as WorkspaceConfig } = props
 
-    const mergedConfig = Object.assign({}, defaultConfig, config) as Required<WorkspaceConfig>
+    const progressIndicator = useMemo(() => {
+        return config.progressIndicator || new SimpleProgressIndicator()
+    }, [config])
 
-    const { progressIndicator } = mergedConfig
+    const themepackHolder = useMemo(() => {
+        return config.themepackHolder || new SimpleThemepackHolder()
+    }, [config])
+
+    const translationHolder = useMemo(() => {
+        return config.translationHolder || new SimpleTranslationHolder()
+    }, [config])
 
     const routingDetectorRef = useRef<RoutingDetectorRef>(null)
 
     const storeMap: Map<string, Store<any>> = useMemo(() => {
         return new Map()
+    }, [])
+
+    const listeners: WorkspaceListener[] = useMemo(() => {
+        return []
     }, [])
 
     const workspace = useMemo(() => {
@@ -78,8 +82,8 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
                 return store
             }
             store = init ? (typeof init === 'function' ? init() : init) : undefined
-            if(store){
-                storeMap.set(name, store);
+            if (store) {
+                storeMap.set(name, store)
             }
             return store
         }) as GetStore<any>
@@ -89,6 +93,23 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             store && storeMap.delete(name)
             return store
         }
+
+        //subscribe & emit
+        const subscribe = (listener: WorkspaceListener) => {
+            listeners.push(listener)
+            return () => {
+                let i = listeners.lastIndexOf(listener)
+                if (i >= 0) {
+                    listeners.splice(i, 1)
+                }
+            }
+        }
+        const emit = (eventName: string, eventData: any) => {
+            listeners.forEach((l) => {
+                l(eventName, eventData)
+            })
+        }
+
 
         //process
         const withProcessIndicator = <P, T>(processes: Process<P, T> | Process<P, T>[], initValue?: P) => {
@@ -111,30 +132,33 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
             envVariables,
             getStore,
             removeStore,
+            subscribe,
+            emit,
             progressIndicator,
             withProcessIndicator,
             _notifyRouting
         }
         return workspace
-    }, [progressIndicator, envVariables, storeMap])
+    }, [progressIndicator, envVariables, storeMap, listeners])
 
 
     const themeBoundary = (children: React.ReactNode) => {
-        return <ThemeBoundary defaultTheme={defaultTheme} themepackLoaders={themepackLoaders} config={mergedConfig} >
+        return <ThemeBoundary defaultTheme={defaultTheme} themepackLoaders={themepackLoaders} config={{ themepackHolder }} >
             {children}
         </ThemeBoundary>
     }
     const i18nBoundary = (children: React.ReactNode) => {
-        return <I18nBoundary defaultLanguage={defaultLanguage} translationLoaders={translationLoaders} config={mergedConfig} >
+        return <I18nBoundary defaultLanguage={defaultLanguage} translationLoaders={translationLoaders} config={{ translationHolder }} >
             {children}
         </I18nBoundary>
     }
 
     /* eslint-disable-next-line @next/next/no-img-element */
-    const fallbackComp = fallback && (typeof fallback === 'boolean' ? <Modal><img alt='loading' className={SPIN_CLASS_NAME} src={spin.src} /></Modal> : fallback)
+    const fallbackComp = fallback && (typeof fallback === 'boolean' ? <Modal><img alt='loading' className={CLASS_NAME_SPIN} src={spin.src} /></Modal> : fallback)
 
     const boundaries = (children: React.ReactNode) => {
         const bo = i18nBoundary(themeBoundary(children))
+        // const bo = themeBoundary(i18nBoundary(children))
         if (fallbackComp) {
             return <Suspense fallback={fallbackComp}>{bo}</Suspense>
         } else {
@@ -152,10 +176,13 @@ export default function WorkspaceBoundary(props: WorkspaceBoundaryProps) {
 
 // a internal component to apply colorScheme in WorkspaceContext
 function Workspace({ className, style, children }: { className?: string, style?: CSSProperties, children: React.ReactNode }) {
+
+    const i18n = useI18n()
     const theme = useTheme()
     const colorScheme = theme?.themepack?.colorScheme
+
     style = (style || colorScheme) ? Object.assign({}, style, colorScheme && { colorScheme }) : undefined
-    return <div data-nextspace-root="" className={clsx(nextspaceStyles.workspace, className)} style={style}>{children}</div>
+    return <div data-nextspace-root="" className={clsx(nextspaceStyles.workspace, className)} style={style} lang={i18n.language}>{children}</div>
 }
 
 // a internal component to handle pathname routing to prevent whole workspace reload
@@ -167,16 +194,17 @@ type RoutingDetectorProps = {
 }
 
 const RoutingDetector = forwardRef<RoutingDetectorRef, RoutingDetectorProps>(function RouteDetector({ progressIndicator }, ref) {
-    const currPath = usePathname()
+    const workspace = useWorkspace()
+    const pathname = usePathname()
     const routings = useMemo(() => {
         return new Set<string>()
     }, [])
 
     useImperativeHandle(ref, () => {
         return {
-            currPath,
+            pathname,
             notifyRouting: (path: string) => {
-                if (currPath === path) {
+                if (pathname === path) {
                     //user route back to current page, reset all previous routing
                     routings.forEach(() => {
                         progressIndicator.stop()
@@ -189,7 +217,7 @@ const RoutingDetector = forwardRef<RoutingDetectorRef, RoutingDetectorProps>(fun
                 }
             }
         }
-    }, [currPath, routings, progressIndicator])
+    }, [pathname, routings, progressIndicator])
 
     useEffect(function () {
         //page are rerouted, decrease all counter
@@ -197,6 +225,11 @@ const RoutingDetector = forwardRef<RoutingDetectorRef, RoutingDetectorProps>(fun
             progressIndicator.stop()
         })
         routings.clear()
-    }, [currPath, routings, progressIndicator])
+    }, [pathname, routings, progressIndicator])
+
+    //emit when pathname changing
+    useEffect(function () {
+        workspace.emit(EVENT_ON_ROUTE, { pathname })
+    }, [workspace, pathname])
     return <Fragment />
 })

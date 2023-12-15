@@ -3,6 +3,7 @@
  * @author: Dennis Chen
  */
 
+import { context } from '@nextspace/server/request'
 import { Inter } from 'next/font/google'
 import AppLayout from './AppLayout'
 import './global.scss'
@@ -23,8 +24,10 @@ export default function RootLayout({
 }: {
     children: React.ReactNode
 }) {
+
+    console.log("root layout request context", context())
     return (
-        <html lang="en">
+        <html>
             <body className={inter.className}>
                 <AppLayout envVariables={envVariables}>
                     {children}
